@@ -35,6 +35,10 @@ export const generateImage = (prompt, name, shortName) =>
 export const generateLore = (meta) =>
   apiClient.post('/generate-lore', meta)
 
+/** Score a token concept's viral potential across 4 dimensions. */
+export const scoreToken = (meta) =>
+  apiClient.post('/score-token', meta)
+
 /** Run AI health analysis on a token. Combines on-chain data with AI scoring. */
 export const analyzeToken = (tokenAddress, tokenData) =>
   apiClient.post('/analyze-token', { tokenAddress, tokenData })

@@ -15,7 +15,7 @@
 import { useState, useCallback } from 'react'
 import { useAccount, useWriteContract, usePublicClient } from 'wagmi'
 import { bsc } from 'wagmi/chains'
-import { generateToken, generateImage, generateLore } from '../lib/apiClient'
+import { generateToken, generateImage, generateLore, scoreToken } from '../lib/apiClient'
 import { uploadImage, getPublicConfig, createTokenAPI } from '../lib/fourmeme'
 import { TOKEN_MANAGER2_ADDRESS, TOKEN_MANAGER2_ABI } from '../lib/contracts'
 
@@ -23,8 +23,9 @@ import { TOKEN_MANAGER2_ADDRESS, TOKEN_MANAGER2_ABI } from '../lib/contracts'
 export const STEPS = {
   IDLE: 'idle',
   GENERATING: 'generating',     // AI generating token concept
-  GEN_IMAGE: 'gen_image',      // AI generating logo
   GEN_LORE: 'gen_lore',       // AI generating lore & tweet
+  GEN_IMAGE: 'gen_image',      // AI generating logo
+  GEN_SCORE: 'gen_score',      // AI scoring viral potential
   UPLOADING: 'uploading',      // uploading image to Four.meme
   CREATING_API: 'creating_api',   // registering token via API
   SIGNING_TX: 'signing_tx',     // waiting for MetaMask tx approval
@@ -36,9 +37,10 @@ export const STEPS = {
 // Human-readable labels for each step (shown in UI)
 export const STEP_LABELS = {
   [STEPS.IDLE]: '',
-  [STEPS.GENERATING]: 'Claude is cooking up your token...',
-  [STEPS.GEN_IMAGE]: 'Generating token logo...',
-  [STEPS.GEN_LORE]: 'Writing the lore & launch tweet...',
+  [STEPS.GENERATING]: 'AI is creating meme details...',
+  [STEPS.GEN_LORE]: 'AI is creating meme lore...',
+  [STEPS.GEN_IMAGE]: 'AI is creating meme image...',
+  [STEPS.GEN_SCORE]: 'AI is creating viral score...',
   [STEPS.UPLOADING]: 'Uploading logo to Four.meme...',
   [STEPS.CREATING_API]: 'Registering token on Four.meme API...',
   [STEPS.SIGNING_TX]: 'Sign launch transaction (check wallet)',
@@ -58,8 +60,9 @@ export const DEPLOY_STEPS = [
 // All steps in order (used for progress tracking)
 export const ALL_STEPS = [
   STEPS.GENERATING,
-  STEPS.GEN_IMAGE,
   STEPS.GEN_LORE,
+  STEPS.GEN_IMAGE,
+  STEPS.GEN_SCORE,
   ...DEPLOY_STEPS,
   STEPS.DONE,
 ]
@@ -73,32 +76,50 @@ export function useTokenCreator({ ensureAuth } = {}) {
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
   const [generated, setGenerated] = useState(null)
-  const [genProgress, setGenProgress] = useState({ token: false, image: false, lore: false })
+  const [genProgress, setGenProgress] = useState({ token: false, lore: false, image: false, score: false })
 
   /**
    * Phase 1: Generate all token assets via AI.
-   * Runs sequentially: concept → image → lore.
-   * Lore failure is non-fatal (catch and continue).
+   * Runs sequentially: concept → lore → image → viral score.
+   * Lore and score failures are non-fatal (catch and continue).
    */
   const generate = useCallback(async (idea) => {
     setError(null)
     setResult(null)
-    setGenProgress({ token: false, image: false, lore: false })
+    setGenProgress({ token: false, lore: false, image: false, score: false })
 
+    // Step 1: Create meme details
     setStep(STEPS.GENERATING)
     const meta = await generateToken(idea)
     setGenProgress(p => ({ ...p, token: true }))
 
-    setStep(STEPS.GEN_IMAGE)
-    const imgData = await generateImage(meta.imagePrompt, meta.name, meta.shortName)
-    setGenProgress(p => ({ ...p, image: true }))
-
+    // Step 2: Create meme lore
     setStep(STEPS.GEN_LORE)
     let loreData = {}
     try { loreData = await generateLore(meta) } catch (_) { }
     setGenProgress(p => ({ ...p, lore: true }))
 
-    const tokenData = { ...meta, ...imgData, ...loreData }
+    // Step 3: Create meme image
+    setStep(STEPS.GEN_IMAGE)
+    const imgData = await generateImage(meta.imagePrompt, meta.name, meta.shortName)
+    setGenProgress(p => ({ ...p, image: true }))
+
+    // Step 4: Create AI viral score
+    setStep(STEPS.GEN_SCORE)
+    let viralScore = null
+    try {
+      viralScore = await scoreToken({
+        name: meta.name,
+        shortName: meta.shortName,
+        desc: meta.desc,
+        lore: loreData.lore || '',
+        tagline: meta.tagline || '',
+        label: meta.label || 'Meme',
+      })
+    } catch (_) { }
+    setGenProgress(p => ({ ...p, score: true }))
+
+    const tokenData = { ...meta, ...imgData, ...loreData, viralScore }
     setGenerated(tokenData)
     setStep(STEPS.IDLE)
     return tokenData
@@ -212,7 +233,7 @@ export function useTokenCreator({ ensureAuth } = {}) {
     setError(null)
     setResult(null)
     setGenerated(null)
-    setGenProgress({ token: false, image: false, lore: false })
+    setGenProgress({ token: false, lore: false, image: false, score: false })
   }, [])
 
   /** Clear error and return to idle state. */
@@ -221,7 +242,7 @@ export function useTokenCreator({ ensureAuth } = {}) {
     setStep(STEPS.IDLE)
   }, [])
 
-  const isGenerating = [STEPS.GENERATING, STEPS.GEN_IMAGE, STEPS.GEN_LORE].includes(step)
+  const isGenerating = [STEPS.GENERATING, STEPS.GEN_LORE, STEPS.GEN_IMAGE, STEPS.GEN_SCORE].includes(step)
   const isDeploying = DEPLOY_STEPS.includes(step)
 
   return {

@@ -27,9 +27,10 @@ const IDEAS = [
 
 // Maps generation steps to progress bar labels
 const PHASE_CONFIG = [
-  { key: STEPS.GENERATING, title: 'AI is thinking' },
-  { key: STEPS.GEN_IMAGE, title: 'AI is creating image' },
-  { key: STEPS.GEN_LORE, title: 'AI is creating lore' },
+  { key: STEPS.GENERATING, title: 'Creating meme details' },
+  { key: STEPS.GEN_LORE, title: 'Creating meme lore' },
+  { key: STEPS.GEN_IMAGE, title: 'Creating meme image' },
+  { key: STEPS.GEN_SCORE, title: 'Creating AI viral score' },
 ]
 
 export default function CreateInput({ onGenerate, isGenerating, step, genProgress }) {
@@ -54,10 +55,11 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
 
   // Progress percentage mapped to each generation phase
   const getPct = () => {
-    if (step === STEPS.GENERATING) return 50
-    if (step === STEPS.GEN_IMAGE) return 70
-    if (step === STEPS.GEN_LORE) return 99
-    return 25
+    if (step === STEPS.GENERATING) return 25
+    if (step === STEPS.GEN_LORE) return 50
+    if (step === STEPS.GEN_IMAGE) return 75
+    if (step === STEPS.GEN_SCORE) return 90
+    return 10
   }
   const pct = getPct()
 

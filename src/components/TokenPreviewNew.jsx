@@ -10,7 +10,7 @@
  * or start over with a new idea.
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import {
   Sparkles, FileText, AlertCircle, Lock, Clock, ArrowUp, Key, Rocket,
   Edit2, Zap, TrendingUp, Flame, Star, Lightbulb, RotateCcw
@@ -46,15 +46,14 @@ function ScoreDimBar({ label, icon: Icon, value }) {
 
 /**
  * AI Viral Score panel.
- * Auto-fetches a score on mount, scoring the token across 4 dimensions:
- * catchiness, relatability, meme potential, and market timing.
+ * Uses pre-fetched score from the generation pipeline if available.
+ * Falls back to fetching on mount if no initial score is provided.
  * Includes a ring chart for overall score, dimension bars, verdict, and tips.
  */
 function ViralScorePanel({ data }) {
-  const [score, setScore] = useState(null)
+  const [score, setScore] = useState(data.viralScore || null)
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState(null)
-  const fetchedRef = useRef(false)
 
   const analyze = async () => {
     setLoading(true); setErr(null)
@@ -69,11 +68,6 @@ function ViralScorePanel({ data }) {
     } catch { setErr('Analysis failed.') }
     finally { setLoading(false) }
   }
-
-  // Auto-analyze once on mount
-  useEffect(() => {
-    if (!fetchedRef.current && data?.name) { fetchedRef.current = true; analyze() }
-  }, [])
 
   const scoreColor = (n) => n >= 80 ? 'var(--green)' : n >= 60 ? 'var(--yellow)' : 'var(--pink)'
   const scoreLabel = (n) => n >= 85 ? '🔥 viral potential' : n >= 70 ? '💪 solid concept' : n >= 55 ? '🛠 needs work' : '💀 needs rethink'
@@ -150,6 +144,13 @@ function ViralScorePanel({ data }) {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {!score && !loading && !err && (
+        <div className="vs-loading">
+          <span style={{ color: 'var(--text3)', fontSize: '13px' }}>No score data available</span>
+          <button onClick={analyze} className="vs-retry" style={{ marginLeft: '8px' }}>analyze</button>
         </div>
       )}
     </div>
