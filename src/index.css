@@ -3206,6 +3206,37 @@ button {
 .an-summary-icon { color: var(--green); flex-shrink: 0; margin-top: 2px; }
 .an-summary p { font-size: 14px; color: var(--text2); line-height: 1.8; }
 
+/* ── Mobile: Create Input & Analysis Search ─────────────────────────────── */
+@media (max-width: 640px) {
+  /* Create page input box: stack vertically */
+  .create-input-box {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .create-input-wrap {
+    width: 100%;
+  }
+
+  .create-go-btn {
+    width: 100%;
+    min-width: unset;
+    padding: 14px 24px;
+  }
+
+  /* Analysis page search: stack vertically */
+  .an-search-wrap {
+    flex-direction: column;
+  }
+
+  .an-search-btn {
+    width: 100%;
+    padding: 14px 24px;
+    justify-content: center;
+    border-radius: var(--r-lg);
+  }
+}
+
 /* Spin animation */
 .spin-anim { animation: spin-360 1s linear infinite; }
 @keyframes spin-360 { to { transform: rotate(360deg); } }
