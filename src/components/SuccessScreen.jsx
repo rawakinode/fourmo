@@ -65,7 +65,7 @@ function MarketingKit({ tokenData, tokenAddress, fourMemeUrl }) {
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await fetch('/api/marketing-kit', {
+        const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/marketing-kit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

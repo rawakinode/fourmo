@@ -59,7 +59,7 @@ function ViralScorePanel({ data }) {
   const analyze = async () => {
     setLoading(true); setErr(null)
     try {
-      const res = await fetch('/api/score-token', {
+      const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/score-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: data.name, shortName: data.shortName, desc: data.desc, lore: data.lore, tagline: data.tagline, label: data.label }),

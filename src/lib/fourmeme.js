@@ -15,7 +15,7 @@ import axios from 'axios'
 // Dev uses Vite proxy path; production hits the API directly.
 const isDev = import.meta.env.DEV
 const prodUrl = 'https://four.meme/meme-api/v1'
-const devUrl  = '/api/four-meme'
+const devUrl  = (import.meta.env.VITE_API_BASE_URL || '') + '/api/four-meme'
 const apiBaseUrl = import.meta.env.VITE_FOUR_MEME_API_BASE_URL || (isDev ? devUrl : prodUrl)
 
 // CDN base for resolving relative image paths returned by the API (e.g. /market/xxx.png)
