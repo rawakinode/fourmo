@@ -1050,6 +1050,141 @@ button {
   color: var(--text);
 }
 
+/* Image style section */
+.create-style-section {
+  width: 100%;
+  max-width: 100%;
+  margin-top: -15px;
+}
+
+.create-style-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.create-style-btn:hover {
+  color: var(--text);
+}
+
+.create-style-btn--active {
+  color: var(--green) !important;
+}
+
+.create-style-content {
+  margin-top: 10px;
+}
+
+.create-style-field {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text1);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.create-style-field:focus {
+  border-color: var(--green);
+}
+
+.create-style-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.create-preset-btn {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all 0.15s;
+}
+
+.create-preset-btn:hover {
+  border-color: var(--border3);
+  color: var(--text);
+}
+
+.create-preset-btn--active {
+  background: var(--green) !important;
+  color: var(--bg) !important;
+  border-color: var(--green) !important;
+}
+
+.create-style-clear {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all 0.15s;
+}
+
+.create-style-clear:hover {
+  border-color: #ff6b8a;
+  color: #ff6b8a;
+}
+
+.create-style-help {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 6px;
+  font-family: var(--font-mono);
+}
+
+/* Progress bar section */
+.create-progress-section {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.create-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+}
+
+.create-progress-track {
+  width: 100%;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.create-progress-fill {
+  height: 100%;
+  background: var(--green);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px var(--green-glow2);
+}
+
 .regen-row {
   text-align: center;
 }
