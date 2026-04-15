@@ -12,7 +12,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useAccount } from 'wagmi'
-import { LayoutGrid, List, Search } from 'lucide-react'
+import { LayoutGrid, List, Search, Rocket } from 'lucide-react'
 import { AUTH_STATUS } from '../hooks/useFourMemeAuth'
 
 import { getMyTokens, resolveImg } from '../lib/fourmeme'
@@ -245,13 +245,12 @@ export default function MyTokensPage({ onCreateNew, auth, onAnalyze }) {
     <div className="my-tokens-page">
       {/* Page header with view toggle and create button */}
       <div className="my-tokens-header" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '24px' }}>
-        <div>
-          <h2 className="my-tokens-h2">My Tokens</h2>
-          <p className="my-tokens-sub">
-            {isAuthReady
-              ? `${tokens.length} token${tokens.length !== 1 ? 's' : ''} created by ${address?.slice(0,6)}…${address?.slice(-4)}`
-              : 'connect & sign to see your tokens'}
-          </p>
+        <div className="my-tokens-title-row">
+          <Rocket size={28} className="my-tokens-icon" />
+          <div>
+            <h2 className="my-tokens-h2">My Tokens</h2>
+            <p className="my-tokens-sub">View, manage, and analyze all your created tokens on Four.meme BSC</p>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'stretch' }}>
           {tokens.length > 0 && (

@@ -30,8 +30,8 @@ export default function CreatePage({ tokenCreator, auth }) {
   const { status: authStatus } = auth ?? {}
   const isAuthReady = authStatus === AUTH_STATUS.READY
 
-  const handleGenerate = async (idea) => {
-    try { await generate(idea) }
+  const handleGenerate = async (idea, imageStyle) => {
+    try { await generate(idea, imageStyle) }
     catch (e) { console.error(e) }
   }
 

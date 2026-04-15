@@ -83,14 +83,14 @@ export function useTokenCreator({ ensureAuth } = {}) {
    * Runs sequentially: concept → lore → image → viral score.
    * Lore and score failures are non-fatal (catch and continue).
    */
-  const generate = useCallback(async (idea) => {
+  const generate = useCallback(async (idea, imageStyle) => {
     setError(null)
     setResult(null)
     setGenProgress({ token: false, lore: false, image: false, score: false })
 
     // Step 1: Create meme details
     setStep(STEPS.GENERATING)
-    const meta = await generateToken(idea)
+    const meta = await generateToken(idea, imageStyle)
     setGenProgress(p => ({ ...p, token: true }))
 
     // Step 2: Create meme lore
@@ -101,7 +101,7 @@ export function useTokenCreator({ ensureAuth } = {}) {
 
     // Step 3: Create meme image
     setStep(STEPS.GEN_IMAGE)
-    const imgData = await generateImage(meta.imagePrompt, meta.name, meta.shortName)
+    const imgData = await generateImage(meta.imagePrompt, meta.name, meta.shortName, meta.imageNegativePrompt)
     setGenProgress(p => ({ ...p, image: true }))
 
     // Step 4: Create AI viral score

@@ -4,12 +4,13 @@
  * The "idea input" step of the token creation flow.
  * Users type a meme concept and hit Generate. Includes:
  *   - Rotating placeholder ideas for inspiration
+ *   - Optional imageStyle input to guide AI visual aesthetic
  *   - Progress bar with phase labels during AI generation
  *   - Quick-pick example chips
  */
 
 import { useState, useEffect } from 'react'
-import { Sparkles, Lightbulb, RotateCw } from 'lucide-react'
+import { Sparkles, Lightbulb, RotateCw, Palette } from 'lucide-react'
 
 import { STEPS } from '../hooks/useTokenCreator'
 
@@ -25,6 +26,16 @@ const IDEAS = [
   'a bus route coin with stuck traffic charts',
 ]
 
+// Preset style options for quick selection
+const STYLE_PRESETS = [
+  'bold flat vector',
+  'anime chibi mascot',
+  'pixel art 8-bit',
+  'hyper-realistic 3D',
+  'glitch cyberpunk',
+  'watercolor sketch',
+]
+
 // Maps generation steps to progress bar labels
 const PHASE_CONFIG = [
   { key: STEPS.GENERATING, title: 'Creating meme details' },
@@ -35,8 +46,10 @@ const PHASE_CONFIG = [
 
 export default function CreateInput({ onGenerate, isGenerating, step, genProgress }) {
   const [idea, setIdea] = useState('')
+  const [imageStyle, setImageStyle] = useState('')
   const [phIdx, setPhIdx] = useState(0)
   const [localLoading, setLocalLoading] = useState(false)
+  const [showStyleInput, setShowStyleInput] = useState(false)
 
   const loading = localLoading || isGenerating
 
@@ -49,7 +62,7 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
   const handleGo = async () => {
     if (!idea.trim() || loading) return
     setLocalLoading(true)
-    try { await onGenerate(idea.trim()) }
+    try { await onGenerate(idea.trim(), imageStyle.trim() || undefined) }
     finally { setLocalLoading(false) }
   }
 
@@ -102,6 +115,80 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
           ) : 'Generate'}
         </button>
       </div>
+
+      {/* Image style selector */}
+      {!loading && (
+        <div style={{ width: '100%', maxWidth: '600px', alignSelf: 'center', marginTop: '16px' }}>
+          <button
+            onClick={() => setShowStyleInput(s => !s)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: showStyleInput ? 'var(--green)' : 'var(--text2)',
+              fontSize: '13px', fontFamily: 'var(--font-mono)', padding: '0',
+              transition: 'color 0.2s',
+            }}
+          >
+            <Palette size={14} />
+            {showStyleInput ? 'hide image style' : 'set image style (optional)'}
+          </button>
+
+          {showStyleInput && (
+            <div style={{ marginTop: '10px' }}>
+              <input
+                type="text"
+                value={imageStyle}
+                onChange={e => setImageStyle(e.target.value)}
+                placeholder="e.g. anime chibi mascot, pixel art 8-bit, glitch cyberpunk…"
+                maxLength={100}
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'var(--surface2)', border: '1px solid var(--border)',
+                  borderRadius: '8px', padding: '10px 14px',
+                  color: 'var(--text1)', fontSize: '14px',
+                  fontFamily: 'var(--font-mono)', outline: 'none',
+                }}
+                onFocus={e => e.target.style.borderColor = 'var(--green)'}
+                onBlur={e => e.target.style.borderColor = 'var(--border)'}
+              />
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                {STYLE_PRESETS.map(preset => (
+                  <button
+                    key={preset}
+                    onClick={() => setImageStyle(preset)}
+                    style={{
+                      padding: '4px 10px', borderRadius: '20px', fontSize: '12px',
+                      fontFamily: 'var(--font-mono)', cursor: 'pointer',
+                      border: '1px solid var(--border)',
+                      background: imageStyle === preset ? 'var(--green)' : 'var(--surface2)',
+                      color: imageStyle === preset ? 'var(--bg)' : 'var(--text2)',
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    {preset}
+                  </button>
+                ))}
+                {imageStyle && (
+                  <button
+                    onClick={() => setImageStyle('')}
+                    style={{
+                      padding: '4px 10px', borderRadius: '20px', fontSize: '12px',
+                      fontFamily: 'var(--font-mono)', cursor: 'pointer',
+                      border: '1px solid var(--border)',
+                      background: 'var(--surface2)', color: 'var(--text2)',
+                    }}
+                  >
+                    ✕ clear
+                  </button>
+                )}
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--text3)', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
+                leave empty to let AI choose the best style automatically
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Progress bar during generation */}
       {loading ? (

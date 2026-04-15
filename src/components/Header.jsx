@@ -68,13 +68,13 @@ export default function Header({ page, onNavigate, isConnected, auth }) {
           onClick={() => onNavigate('create')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
           <Sparkles size={18} /><span className="nav-item-text">Meme AI Creator</span>
         </button>
-        <button className={`nav-item ${isActive('/my-tokens') ? 'nav-item--active' : ''}`}
-          onClick={() => onNavigate('my-tokens')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-          <Rocket size={18} /><span className="nav-item-text">My Tokens</span>
-        </button>
         <button className={`nav-item ${isActive('/analysis') ? 'nav-item--active' : ''}`}
           onClick={() => onNavigate('analysis')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
           <Brain size={18} /><span className="nav-item-text">Token Analysis</span>
+        </button>
+        <button className={`nav-item ${isActive('/my-tokens') ? 'nav-item--active' : ''}`}
+          onClick={() => onNavigate('my-tokens')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+          <Rocket size={18} /><span className="nav-item-text">My Tokens</span>
         </button>
       </nav>
     </>

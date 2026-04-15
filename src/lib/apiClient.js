@@ -23,13 +23,15 @@ apiClient.interceptors.response.use(
   }
 )
 
-/** Generate a full token concept (name, symbol, desc, image prompt, etc.) from a text idea. */
-export const generateToken = (idea) =>
-  apiClient.post('/generate-token', { idea })
+/** Generate a full token concept (name, symbol, desc, image prompt, etc.) from a text idea.
+ *  Optionally pass imageStyle to guide the AI's visual aesthetic choice. */
+export const generateToken = (idea, imageStyle) =>
+  apiClient.post('/generate-token', { idea, imageStyle: imageStyle || undefined })
 
-/** Generate a token logo image from an AI prompt. Returns base64 image data. */
-export const generateImage = (prompt, name, shortName) =>
-  apiClient.post('/generate-image', { prompt, name, shortName })
+/** Generate a token logo image from an AI prompt. Returns base64 image data.
+ *  Pass imageNegativePrompt from generate-token for style-aware negative guidance. */
+export const generateImage = (prompt, name, shortName, imageNegativePrompt) =>
+  apiClient.post('/generate-image', { prompt, name, shortName, imageNegativePrompt: imageNegativePrompt || undefined })
 
 /** Generate lore, launch tweet, and use-case copy for a token. */
 export const generateLore = (meta) =>

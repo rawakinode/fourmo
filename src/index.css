@@ -1758,10 +1758,12 @@ button {
   justify-content: space-between;
   gap: 16px;
 }
+.my-tokens-title-row { display: flex; align-items: center; gap: 14px; }
+.my-tokens-icon { color: var(--green); flex-shrink: 0; }
 
 .my-tokens-h2 {
   font-family: var(--font-disp);
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
