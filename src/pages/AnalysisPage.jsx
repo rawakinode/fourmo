@@ -46,20 +46,20 @@ const fmtAge = (h) => {
 
 // Visual config for sentiment badges
 const SENTIMENT_CONFIG = {
-  bullish:   { color: '#00ff88', bg: 'rgba(0,255,136,0.1)',  border: 'rgba(0,255,136,0.3)',  icon: '🚀' },
-  neutral:   { color: '#8896b0', bg: 'rgba(136,150,176,0.1)', border: 'rgba(136,150,176,0.3)', icon: '😐' },
-  bearish:   { color: '#ff5caa', bg: 'rgba(255,92,170,0.1)', border: 'rgba(255,92,170,0.3)',  icon: '🐻' },
-  graduated: { color: '#ffe147', bg: 'rgba(255,225,71,0.1)', border: 'rgba(255,225,71,0.3)',  icon: '🎓' },
-  dormant:   { color: '#4a5568', bg: 'rgba(74,85,104,0.1)',  border: 'rgba(74,85,104,0.3)',   icon: '😴' },
+  bullish: { color: '#00ff88', bg: 'rgba(0,255,136,0.1)', border: 'rgba(0,255,136,0.3)', icon: '🚀' },
+  neutral: { color: '#8896b0', bg: 'rgba(136,150,176,0.1)', border: 'rgba(136,150,176,0.3)', icon: '😐' },
+  bearish: { color: '#ff5caa', bg: 'rgba(255,92,170,0.1)', border: 'rgba(255,92,170,0.3)', icon: '🐻' },
+  graduated: { color: '#ffe147', bg: 'rgba(255,225,71,0.1)', border: 'rgba(255,225,71,0.3)', icon: '🎓' },
+  dormant: { color: '#4a5568', bg: 'rgba(74,85,104,0.1)', border: 'rgba(74,85,104,0.3)', icon: '😴' },
 }
 
 // Visual config for recommendation action badges
 const ACTION_CONFIG = {
-  HOLD:       { color: '#ffe147', icon: <Shield size={14}/>, label: 'Hold & Watch' },
-  PROMOTE:    { color: '#00ff88', icon: <Zap size={14}/>,    label: 'Promote Now' },
-  WATCH:      { color: '#4d9fff', icon: <Target size={14}/>, label: 'Keep Watching' },
-  GRADUATED:  { color: '#ffe147', icon: <Star size={14}/>,   label: 'Graduated' },
-  STALE:      { color: '#8896b0', icon: <Clock size={14}/>,  label: 'Needs Attention' },
+  HOLD: { color: '#ffe147', icon: <Shield size={14} />, label: 'Hold & Watch' },
+  PROMOTE: { color: '#00ff88', icon: <Zap size={14} />, label: 'Promote Now' },
+  WATCH: { color: '#4d9fff', icon: <Target size={14} />, label: 'Keep Watching' },
+  GRADUATED: { color: '#ffe147', icon: <Star size={14} />, label: 'Graduated' },
+  STALE: { color: '#8896b0', icon: <Clock size={14} />, label: 'Needs Attention' },
 }
 
 /** SVG arc chart for overall score (0-100) with color coding. */
@@ -72,25 +72,25 @@ function ScoreArc({ score, size = 120 }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size/2} cy={size/2} r={r}
+      <circle cx={size / 2} cy={size / 2} r={r}
         fill="none" stroke="var(--border)" strokeWidth={10}
         strokeDasharray={`${circ * 0.75} ${circ}`}
         strokeDashoffset={0}
         strokeLinecap="round"
-        transform={`rotate(${rotation} ${size/2} ${size/2})`}
+        transform={`rotate(${rotation} ${size / 2} ${size / 2})`}
       />
-      <circle cx={size/2} cy={size/2} r={r}
+      <circle cx={size / 2} cy={size / 2} r={r}
         fill="none" stroke={color} strokeWidth={10}
         strokeDasharray={`${filled} ${circ}`}
         strokeLinecap="round"
-        transform={`rotate(${rotation} ${size/2} ${size/2})`}
+        transform={`rotate(${rotation} ${size / 2} ${size / 2})`}
         style={{ transition: 'stroke-dasharray 1s ease', filter: `drop-shadow(0 0 6px ${color}88)` }}
       />
-      <text x={size/2} y={size/2 - 4} textAnchor="middle"
+      <text x={size / 2} y={size / 2 - 4} textAnchor="middle"
         fill={color} fontSize={size * 0.22} fontWeight="800" fontFamily="var(--font-disp)">
         {score}
       </text>
-      <text x={size/2} y={size/2 + 14} textAnchor="middle"
+      <text x={size / 2} y={size / 2 + 14} textAnchor="middle"
         fill="var(--text3)" fontSize={size * 0.09} fontFamily="var(--font-mono)">
         /100
       </text>
@@ -136,9 +136,9 @@ function MetricCard({ label, value, sub, icon, highlight }) {
 /** Colored chip for alerts, strengths, or weaknesses. */
 function Chip({ text, type }) {
   const cfg = {
-    alert:    { icon: <AlertTriangle size={12}/>, cls: 'chip--alert' },
-    strength: { icon: <CheckCircle size={12}/>,   cls: 'chip--strength' },
-    weakness: { icon: <TrendingDown size={12}/>,  cls: 'chip--weakness' },
+    alert: { icon: <AlertTriangle size={12} />, cls: 'chip--alert' },
+    strength: { icon: <CheckCircle size={12} />, cls: 'chip--strength' },
+    weakness: { icon: <TrendingDown size={12} />, cls: 'chip--weakness' },
   }[type]
   return (
     <div className={`an-chip ${cfg.cls}`}>
@@ -150,13 +150,13 @@ function Chip({ text, type }) {
 
 /** Full analysis result view with all sections. */
 function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
-  const s  = SENTIMENT_CONFIG[report.sentiment] ?? SENTIMENT_CONFIG.neutral
+  const s = SENTIMENT_CONFIG[report.sentiment] ?? SENTIMENT_CONFIG.neutral
   const ac = ACTION_CONFIG[report.recommendation?.action] ?? ACTION_CONFIG.WATCH
-  const m  = report.metrics ?? {}
+  const m = report.metrics ?? {}
   const img = resolveImg(tokenMeta?.img ?? tokenMeta?.image ?? tokenMeta?.imgUrl ?? '')
-  const name      = tokenMeta?.name      ?? tokenMeta?.tokenName ?? 'Unknown'
+  const name = tokenMeta?.name ?? tokenMeta?.tokenName ?? 'Unknown'
   const shortName = tokenMeta?.shortName ?? '???'
-  const addr      = m.tokenAddress ?? tokenMeta?.tokenAddress ?? ''
+  const addr = m.tokenAddress ?? tokenMeta?.tokenAddress ?? ''
 
   return (
     <div className="an-result">
@@ -164,7 +164,7 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       <div className="an-identity">
         <div className="an-identity-logo">
           {img
-            ? <img src={img} alt={name} onError={e => { e.currentTarget.style.display='none' }} />
+            ? <img src={img} alt={name} onError={e => { e.currentTarget.style.display = 'none' }} />
             : <div className="an-identity-logo-ph">{shortName[0]}</div>
           }
         </div>
@@ -173,7 +173,7 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
           <div className="an-identity-row">
             <span className="an-identity-sym">${shortName}</span>
             <span className="an-identity-tag">{tokenMeta?.tag ?? tokenMeta?.label ?? 'Meme'}</span>
-            <span className="an-identity-addr">{addr.slice(0,8)}…{addr.slice(-6)}</span>
+            <span className="an-identity-addr">{addr.slice(0, 8)}…{addr.slice(-6)}</span>
           </div>
         </div>
         <div className="an-identity-actions">
@@ -271,16 +271,16 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       {/* AI score breakdown — 4 dimensions */}
       <div className="an-section-label">ai score breakdown</div>
       <div className="an-scores-grid">
-        <ScoreBar label="Momentum"  score={report.dimensions?.momentum?.score ?? 0}
+        <ScoreBar label="Momentum" score={report.dimensions?.momentum?.score ?? 0}
           insight={report.dimensions?.momentum?.insight}
           icon={<Zap size={13} />} />
         <ScoreBar label="Community" score={report.dimensions?.community?.score ?? 0}
           insight={report.dimensions?.community?.insight}
           icon={<Users size={13} />} />
-        <ScoreBar label="Curve"     score={report.dimensions?.curve?.score ?? 0}
+        <ScoreBar label="Curve" score={report.dimensions?.curve?.score ?? 0}
           insight={report.dimensions?.curve?.insight}
           icon={<Activity size={13} />} />
-        <ScoreBar label="Virality"  score={report.dimensions?.virality?.score ?? 0}
+        <ScoreBar label="Virality" score={report.dimensions?.virality?.score ?? 0}
           insight={report.dimensions?.virality?.insight}
           icon={<TrendingUp size={13} />} />
       </div>
@@ -339,15 +339,15 @@ function WalletTokenPicker({ tokens, onPick, loading }) {
       <p className="an-picker-hint">{tokens.length} token{tokens.length !== 1 ? 's' : ''} found — pick one to analyze:</p>
       {tokens.map((t, i) => {
         const name = t.name ?? t.tokenName ?? '???'
-        const sym  = t.shortName ?? '???'
-        const img  = resolveImg(t.img ?? t.image ?? '')
-        const pct  = t.progress != null ? (parseFloat(t.progress) * 100).toFixed(0) : null
+        const sym = t.shortName ?? '???'
+        const img = resolveImg(t.img ?? t.image ?? '')
+        const pct = t.progress != null ? (parseFloat(t.progress) * 100).toFixed(0) : null
         const addr = t.tokenAddress ?? t.address ?? ''
         return (
           <button key={i} className="an-picker-item" onClick={() => onPick(t)}>
             <div className="an-picker-item-img">
-              {img ? <img src={img} alt={name} onError={e=>{e.currentTarget.style.display='none'}} />
-                   : <div className="an-picker-item-ph">{sym[0]}</div>}
+              {img ? <img src={img} alt={name} onError={e => { e.currentTarget.style.display = 'none' }} />
+                : <div className="an-picker-item-ph">{sym[0]}</div>}
             </div>
             <div className="an-picker-item-info">
               <span className="an-picker-item-name">{name}</span>
@@ -373,22 +373,22 @@ function WalletTokenPicker({ tokens, onPick, loading }) {
 export default function AnalysisPage() {
   const [searchParams] = useSearchParams()
 
-  const [input, setInput]           = useState(searchParams.get('address') ?? '')
+  const [input, setInput] = useState(searchParams.get('address') ?? '')
   const [inputError, setInputError] = useState('')
 
   // Wallet search mode — shows token picker when a wallet address is entered
-  const [walletTokens, setWalletTokens]     = useState(null)
-  const [walletLoading, setWalletLoading]   = useState(false)
+  const [walletTokens, setWalletTokens] = useState(null)
+  const [walletLoading, setWalletLoading] = useState(false)
 
-  const [selectedToken, setSelectedToken]   = useState(null)
+  const [selectedToken, setSelectedToken] = useState(null)
 
   // Analysis state
-  const [report, setReport]         = useState(null)
-  const [analyzing, setAnalyzing]   = useState(false)
-  const [analysisError, setError]   = useState(null)
+  const [report, setReport] = useState(null)
+  const [analyzing, setAnalyzing] = useState(false)
+  const [analysisError, setError] = useState(null)
 
   // Trending tokens for quick-pick suggestions
-  const [hotTokens, setHotTokens]   = useState([])
+  const [hotTokens, setHotTokens] = useState([])
 
   // Auto-analyze if address query param is present (linked from My Tokens page)
   useEffect(() => {
@@ -397,7 +397,7 @@ export default function AnalysisPage() {
       setInput(addr)
       runTokenAnalysis(addr)
     }
-    
+
     // Fetch trending tokens for suggestions
     getTokenList({ type: 'HOT', listType: 'ADV', pageIndex: 1, pageSize: 5 })
       .then(list => setHotTokens(list ?? []))
@@ -456,26 +456,26 @@ export default function AnalysisPage() {
       const tp = detail.tokenPrice ?? {}
 
       const result = await analyzeToken(addr, {
-        name:        detail.name       ?? detail.tokenName,
-        shortName:   detail.shortName,
-        desc:        detail.descr      ?? detail.desc ?? detail.description ?? '',
-        tag:         detail.tag        ?? detail.label,
-        status:      detail.status,
-        progress:    tp.progress       ?? detail.progress,
-        cap:         tp.marketCap      ?? detail.cap ?? detail.marketCap,
-        holders:     tp.holderCount    ?? detail.hold ?? detail.holders,
-        volume:      tp.trading        ?? detail.volume ?? detail.day1Vol,
-        price:       tp.price          ?? detail.price ?? detail.lastPrice,
-        increase:    tp.dayIncrease    ?? detail.increase ?? detail.day1Increase ?? detail.dayIncrease,
-        createDate:  detail.createDate ?? tp.createDate,
+        name: detail.name ?? detail.tokenName,
+        shortName: detail.shortName,
+        desc: detail.descr ?? detail.desc ?? detail.description ?? '',
+        tag: detail.tag ?? detail.label,
+        status: detail.status,
+        progress: tp.progress ?? detail.progress,
+        cap: tp.marketCap ?? detail.cap ?? detail.marketCap,
+        holders: tp.holderCount ?? detail.hold ?? detail.holders,
+        volume: tp.trading ?? detail.volume ?? detail.day1Vol,
+        price: tp.price ?? detail.price ?? detail.lastPrice,
+        increase: tp.dayIncrease ?? detail.increase ?? detail.day1Increase ?? detail.dayIncrease,
+        createDate: detail.createDate ?? tp.createDate,
         liquidityAdded: detail.liquidityAdded,
-        tradingUsd:  tp.tradingUsd,
-        dayTrading:  tp.dayTrading,
-        raisedAmount: tp.raisedAmount  ?? detail.raisedAmount,
-        liquidity:   tp.liquidity,
-        hourIncrease:     tp.hourIncrease,
+        tradingUsd: tp.tradingUsd,
+        dayTrading: tp.dayTrading,
+        raisedAmount: tp.raisedAmount ?? detail.raisedAmount,
+        liquidity: tp.liquidity,
+        hourIncrease: tp.hourIncrease,
         fourHourIncrease: tp.fourHourIncrease,
-        maxPrice:    tp.maxPrice,
+        maxPrice: tp.maxPrice,
       })
       setReport(result)
     } catch (e) {
@@ -510,7 +510,7 @@ export default function AnalysisPage() {
     setError(null)
     try {
       let detail = token
-      try { detail = await getTokenDetail(addr) } catch (_) {}
+      try { detail = await getTokenDetail(addr) } catch (_) { }
       await runAnalysis(addr, { ...token, ...detail })
     } catch (e) {
       setError(e.message)
@@ -576,12 +576,12 @@ export default function AnalysisPage() {
         <div className="an-helper">
           <span className="an-helper-label">Try with:</span>
           {hotTokens.map((t, i) => (
-            <button 
-              key={i} 
-              className="an-helper-chip" 
-              onClick={() => { 
+            <button
+              key={i}
+              className="an-helper-chip"
+              onClick={() => {
                 const addr = t.tokenAddress ?? t.address;
-                setInput(addr); 
+                setInput(addr);
                 runTokenAnalysis(addr);
               }}
             >

@@ -12,11 +12,12 @@
 import axios from 'axios'
 
 // Resolve API base depending on environment.
-// Dev uses Vite proxy path; production hits the API directly.
-const isDev = import.meta.env.DEV
+// When a backend URL is configured, always proxy through it (avoids CORS + auth issues).
+// Only fall back to direct API access if no backend is available in production.
+const backendUrl = import.meta.env.VITE_API_BASE_URL
 const prodUrl = 'https://four.meme/meme-api/v1'
-const devUrl  = (import.meta.env.VITE_API_BASE_URL || '') + '/api/four-meme'
-const apiBaseUrl = import.meta.env.VITE_FOUR_MEME_API_BASE_URL || (isDev ? devUrl : prodUrl)
+const proxyUrl = (backendUrl || '') + '/api/four-meme'
+const apiBaseUrl = import.meta.env.VITE_FOUR_MEME_API_BASE_URL || (backendUrl ? proxyUrl : (import.meta.env.DEV ? '/api/four-meme' : prodUrl))
 
 // CDN base for resolving relative image paths returned by the API (e.g. /market/xxx.png)
 export const FOUR_MEME_CDN = 'https://static.four.meme'
@@ -114,12 +115,12 @@ export async function getUserProfile(accessToken, userId) {
  * Supports sorting, filtering by name/symbol, and pagination.
  */
 export async function getMyTokens(accessToken, userId, {
-  orderBy   = 'CREATE_DATE',
-  sorted    = 'DESC',
+  orderBy = 'CREATE_DATE',
+  sorted = 'DESC',
   tokenName = '',
   pageIndex = 1,
-  pageSize  = 300,
-  symbol    = '',
+  pageSize = 300,
+  symbol = '',
 } = {}) {
   const params = new URLSearchParams({
     userId,
@@ -191,27 +192,27 @@ export async function createTokenAPI(accessToken, {
     name,
     shortName,
     desc,
-    totalSupply:  toNumber(raisedToken.totalAmount,  1_000_000_000),
+    totalSupply: toNumber(raisedToken.totalAmount, 1_000_000_000),
     raisedAmount: toNumber(raisedToken.totalBAmount, 24),
-    saleRate:     toNumber(raisedToken.saleRate,     0.8),
-    reserveRate:  0,
+    saleRate: toNumber(raisedToken.saleRate, 0.8),
+    reserveRate: 0,
     imgUrl,
     raisedToken,
-    launchTime:   Date.now(),
-    funGroup:     false,
+    launchTime: Date.now(),
+    funGroup: false,
     label,
     lpTradingFee: 0.0025,
-    preSale:      '0',
-    clickFun:     false,
-    symbol:       raisedToken.symbol,
-    dexType:      'PANCAKE_SWAP',
-    rushMode:     false,
-    onlyMPC:      false,
-    feePlan:      false,
+    preSale: '0',
+    clickFun: false,
+    symbol: raisedToken.symbol,
+    dexType: 'PANCAKE_SWAP',
+    rushMode: false,
+    onlyMPC: false,
+    feePlan: false,
   }
-  if (webUrl)       body.webUrl       = webUrl
-  if (twitterUrl)   body.twitterUrl   = twitterUrl
-  if (telegramUrl)  body.telegramUrl  = telegramUrl
+  if (webUrl) body.webUrl = webUrl
+  if (twitterUrl) body.twitterUrl = twitterUrl
+  if (telegramUrl) body.telegramUrl = telegramUrl
   if (tokenTaxInfo) body.tokenTaxInfo = tokenTaxInfo
 
   const res = await api.post('/private/token/create', body, {
@@ -250,12 +251,12 @@ export async function getTokenRankings({
   if (!type) throw new Error('getTokenRankings requires a type parameter')
   const body = { type, pageSize }
   if (rankingKind) body.rankingKind = rankingKind
-  if (version)     body.version     = version
-  if (symbol)      body.symbol      = symbol
-  if (minCap  != null) body.minCap  = minCap
-  if (maxCap  != null) body.maxCap  = maxCap
-  if (minVol  != null) body.minVol  = minVol
-  if (maxVol  != null) body.maxVol  = maxVol
+  if (version) body.version = version
+  if (symbol) body.symbol = symbol
+  if (minCap != null) body.minCap = minCap
+  if (maxCap != null) body.maxCap = maxCap
+  if (minVol != null) body.minVol = minVol
+  if (maxVol != null) body.maxVol = maxVol
   if (minHold != null) body.minHold = minHold
   if (maxHold != null) body.maxHold = maxHold
   const res = await api.post('/public/token/ranking', body)

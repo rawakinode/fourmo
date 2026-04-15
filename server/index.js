@@ -23,7 +23,7 @@ import axios from 'axios'
 const app = express()
 const PORT = process.env.PORT || 3001
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:4173'] }))
+app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: '10mb' }))
 app.use('/api/four-meme', express.raw({ type: '*/*', limit: '10mb' }))
 
@@ -676,7 +676,7 @@ app.all('/api/four-meme/*', async (req, res) => {
     if (method === 'POST' || method === 'PUT') {
       response = await fourMemeApi.request({ method, url: `/${path}`, data: req.body, headers })
     } else if (method === 'GET') {
-      response = await fourMemeApi.get(`/${path}`, { headers })
+      response = await fourMemeApi.get(`/${path}`, { headers, params: req.query })
     } else {
       return res.status(405).json({ error: 'Method not allowed' })
     }
