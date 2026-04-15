@@ -689,11 +689,16 @@ app.all('/api/four-meme/*', async (req, res) => {
   }
 })
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✓ MemeAgent backend running on :${PORT}`)
-  console.log(`  LLM Provider → ${AI_LLM_PROVIDER} (${LLM_MODEL})`)
-  console.log(`  Img Provider → ${AI_IMAGE_PROVIDER} (${IMAGE_MODEL})`)
-  if ((AI_LLM_PROVIDER === 'fireworks' || AI_IMAGE_PROVIDER === 'fireworks') && !FIREWORKS_API_KEY) console.warn('⚠  FIREWORKS_API_KEY not set — fireworks calls will fail')
-  if ((AI_LLM_PROVIDER === 'dgrid' || AI_IMAGE_PROVIDER === 'dgrid') && !DGRID_API_KEY) console.warn('⚠  DGRID_API_KEY not set — dgrid calls will fail')
-})
+// Ekspor app untuk Vercel
+export default app
+
+// Start server lokal jika bukan di Vercel
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✓ MemeAgent backend running on :${PORT}`)
+    console.log(`  LLM Provider → ${AI_LLM_PROVIDER} (${LLM_MODEL})`)
+    console.log(`  Img Provider → ${AI_IMAGE_PROVIDER} (${IMAGE_MODEL})`)
+    if ((AI_LLM_PROVIDER === 'fireworks' || AI_IMAGE_PROVIDER === 'fireworks') && !FIREWORKS_API_KEY) console.warn('⚠  FIREWORKS_API_KEY not set — fireworks calls will fail')
+    if ((AI_LLM_PROVIDER === 'dgrid' || AI_IMAGE_PROVIDER === 'dgrid') && !DGRID_API_KEY) console.warn('⚠  DGRID_API_KEY not set — dgrid calls will fail')
+  })
+}
