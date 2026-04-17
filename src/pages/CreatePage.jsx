@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { Skull, X } from 'lucide-react'
 import { STEPS } from '../hooks/useTokenCreator'
@@ -24,6 +25,8 @@ import useScrollReveal from '../hooks/useScrollReveal'
 export default function CreatePage({ tokenCreator, auth }) {
   useScrollReveal()
   const { isConnected } = useAccount()
+  const [searchParams] = useSearchParams()
+  const initialIdea = searchParams.get('idea') || ''
 
   const {
     step, error, result, generated, genProgress,
@@ -83,6 +86,7 @@ export default function CreatePage({ tokenCreator, auth }) {
           isGenerating={isGenerating}
           step={step}
           genProgress={genProgress}
+          initialIdea={initialIdea}
         />
       )}
       {showPreview && (

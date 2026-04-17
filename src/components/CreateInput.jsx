@@ -4,15 +4,15 @@
  * The "idea input" step of the token creation flow.
  * Users type a meme concept and hit Generate. Includes:
  *   - Rotating placeholder ideas for inspiration
- *   - Optional imageStyle input to guide AI visual aesthetic
+ *   - Optional memeStyle input to guide AI visual aesthetic
  *   - Progress bar with phase labels during AI generation
  *   - Quick-pick example chips
  */
 
 import { useState, useEffect } from 'react'
 import { Sparkles, Lightbulb, Loader, Palette } from 'lucide-react'
-
 import { STEPS } from '../hooks/useTokenCreator'
+import { useNavigate } from 'react-router-dom'
 
 // Rotating placeholder ideas shown in the input field
 const IDEAS = [
@@ -44,12 +44,13 @@ const PHASE_CONFIG = [
   { key: STEPS.GEN_SCORE, title: 'Creating AI viral score' },
 ]
 
-export default function CreateInput({ onGenerate, isGenerating, step, genProgress }) {
-  const [idea, setIdea] = useState('')
+export default function CreateInput({ onGenerate, isGenerating, step, genProgress, initialIdea = '' }) {
+  const [idea, setIdea] = useState(initialIdea)
   const [imageStyle, setImageStyle] = useState('')
   const [phIdx, setPhIdx] = useState(0)
   const [localLoading, setLocalLoading] = useState(false)
   const [showStyleInput, setShowStyleInput] = useState(false)
+  const navigate = useNavigate()
 
   const loading = localLoading || isGenerating
 
@@ -58,6 +59,11 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
     const t = setInterval(() => setPhIdx(i => (i + 1) % IDEAS.length), 3000)
     return () => clearInterval(t)
   }, [])
+
+  // Sync initialIdea if it changes (e.g. user navigates with new param)
+  useEffect(() => {
+    if (initialIdea) setIdea(initialIdea)
+  }, [initialIdea])
 
   const handleGo = async () => {
     if (!idea.trim() || loading) return
@@ -114,6 +120,17 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
             </div>
           ) : 'Generate'}
         </button>
+
+        {!loading && (
+          <button
+            onClick={() => navigate('/trend')}
+            className="an-search-btn"
+            style={{ width: 'auto', padding: '0 20px', height: '44px', borderRadius: '12px', background: 'var(--surface2)', border: '1px solid var(--border2)', color: 'var(--text)', boxShadow: 'none' }}
+          >
+            <Sparkles size={14} />
+            <span style={{ fontSize: '13px' }}>Trend Discovery</span>
+          </button>
+        )}
       </div>
 
       {/* Image style selector */}
@@ -124,7 +141,7 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
             className={`create-style-btn ${showStyleInput ? 'create-style-btn--active' : ''}`}
           >
             <Palette size={14} />
-            {showStyleInput ? 'hide image style' : 'set image style (optional)'}
+            {showStyleInput ? 'hide meme style' : 'set meme style (optional)'}
           </button>
 
           {showStyleInput && (
@@ -163,6 +180,7 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
           )}
         </div>
       )}
+
 
       {/* Progress bar during generation */}
       {loading ? (

@@ -45,4 +45,8 @@ export const scoreToken = (meta) =>
 export const analyzeToken = (tokenAddress, tokenData) =>
   apiClient.post('/analyze-token', { tokenAddress, tokenData })
 
+/** Fetches real-time multi-chain meme trend analysis. */
+export const analyzeTrend = () =>
+  apiClient.post('/trend-analysis', {})
+
 export default apiClient

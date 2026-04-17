@@ -18,6 +18,7 @@ import LandingPage from './pages/LandingPage'
 import CreatePage from './pages/CreatePage'
 import MyTokensPage from './pages/MyTokensPage'
 import AnalysisPage from './pages/AnalysisPage'
+import TrendPage from './pages/TrendPage'
 import AuthBanner from './components/AuthBanner'
 
 function AppContent() {
@@ -30,7 +31,7 @@ function AppContent() {
   // Centralized navigation handler — syncs page state and URL
   const handleNavigate = (page, opts = {}) => {
     setCurrentPage(page)
-    const routes = { landing: '/', create: '/create', 'my-tokens': '/my-tokens', analysis: '/analysis' }
+    const routes = { landing: '/', create: '/create', 'my-tokens': '/my-tokens', analysis: '/analysis', trend: '/trend' }
     let path = routes[page] ?? '/'
     if (page === 'analysis' && opts.address) path += `?address=${opts.address}`
     navigate(path)
@@ -47,6 +48,7 @@ function AppContent() {
           <Route path="/create" element={<CreatePage tokenCreator={tokenCreator} auth={auth} />} />
           <Route path="/my-tokens" element={<MyTokensPage onCreateNew={() => handleNavigate('create')} auth={auth} onAnalyze={(addr) => handleNavigate('analysis', { address: addr })} />} />
           <Route path="/analysis" element={<AnalysisPage />} />
+          <Route path="/trend" element={<TrendPage />} />
         </Routes>
       </main>
       <footer className="footer">

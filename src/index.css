@@ -753,20 +753,21 @@ button {
 }
 
 /* Strip section */
+.strip-row {
+  display: flex;
+  gap: 16px;
+  animation: strip-scroll 60s linear infinite;
+  width: max-content;
+}
+
 .strip-section {
   padding: 50px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.strip-row {
-  display: flex;
-  gap: 16px;
+  width: 100%;
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
-  animation: strip-scroll 30s linear infinite;
-  width: 100%;
 }
 
 .strip-row:hover {

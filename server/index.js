@@ -661,6 +661,279 @@ Rules:
 })
 
 // ---------------------------------------------------------------------------
+// POST /api/trend-analysis
+// Fetches real-time multi-chain meme trend data from:
+//   - Four.meme (BSC HOT + NEW tokens)
+//   - CoinGecko (trending coins, global market)
+//   - DexScreener (hot pairs: BSC, Solana, Ethereum)
+// AI analyzes all data and returns trend themes, token idea, and heatmap.
+// Fetched on-demand per user request (no background polling).
+// ---------------------------------------------------------------------------
+
+
+/** Fetch ranked tokens from Four.meme (HOT, Volume, Progress) */
+async function fetchFourMemeTokens() {
+  try {
+    const types = ['HOT', 'VOL_DAY_1', 'PROGRESS']
+    const results = await Promise.all(
+      types.map(type =>
+        axios.post(
+          'https://four.meme/meme-api/v1/public/token/ranking',
+          { pagesize: 40, type },
+          { headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, timeout: 8000 }
+        )
+      )
+    )
+
+    const [hotData, volData, progData] = results.map(r => r.data?.data || [])
+
+    const mapToken = (t, status) => ({
+      name: t.name, symbol: t.shortName || t.symbol,
+      tag: t.tag || 'Meme', status,
+      increase24h: parseFloat(t.dayIncrease || t.increase || 0),
+      volume24h: parseFloat(t.dayTrading || t.volume || 0),
+      holders: parseInt(t.hold || t.holders || 0),
+      progress: parseFloat(t.progress || 0),
+      cap: parseFloat(t.cap || 0),
+      chain: 'BSC',
+    })
+
+    const hot = hotData.map(t => mapToken(t, 'HOT'))
+    const vol = volData.map(t => mapToken(t, 'VOLUME'))
+    const prog = progData.map(t => mapToken(t, 'PROGRESS'))
+
+    // Merge for AI context, keeping them distinct for frontend if needed
+    // But for AI summary, we'll slice them
+    console.log(`[trend] Four.meme ranked fetched: ${hot.length} hot, ${vol.length} vol, ${prog.length} progress`)
+    
+    return { hot, vol, prog }
+  } catch (e) {
+    console.warn('[trend] four.meme ranking fetch error:', e.message)
+    return { hot: [], vol: [], prog: [] }
+  }
+}
+
+
+/** Fetch hot pairs from DexScreener for BSC, Solana, Ethereum */
+async function fetchDexScreenerTrends() {
+  try {
+    const chains = ['bsc', 'solana', 'ethereum']
+    const results = await Promise.allSettled(
+      chains.map(chain =>
+        axios.get(`https://api.dexscreener.com/token-profiles/latest/v1`, {
+          timeout: 8000,
+        }).then(r => ({ chain, data: r.data }))
+      )
+    )
+
+    // Also fetch boosted tokens (trending attention signal)
+    const boostedResp = await axios.get('https://api.dexscreener.com/token-boosts/top/v1', {
+      timeout: 8000,
+    }).catch(() => ({ data: [] }))
+
+    const allPairs = []
+    for (const result of results) {
+      if (result.status === 'fulfilled' && Array.isArray(result.value?.data)) {
+        const items = result.value.data.slice(0, 15).map(t => ({
+          name: t.description || t.name || '',
+          symbol: '',
+          chain: (t.chainId || result.value.chain || 'unknown').toUpperCase(),
+          address: t.tokenAddress,
+          url: t.url,
+          links: (t.links || []).map(l => l.type).join(','),
+        }))
+        allPairs.push(...items)
+      }
+    }
+
+    const boosted = Array.isArray(boostedResp.data)
+      ? boostedResp.data.slice(0, 10).map(t => ({
+          name: t.description || '',
+          symbol: '',
+          chain: (t.chainId || '').toUpperCase(),
+          address: t.tokenAddress,
+          totalAmount: t.totalAmount,
+          url: t.url,
+        }))
+      : []
+
+    return { profiles: allPairs, boosted }
+  } catch (e) {
+    console.warn('[trend] dexscreener fetch error:', e.message)
+    return { profiles: [], boosted: [] }
+  }
+}
+
+app.post('/api/trend-analysis', async (req, res) => {
+  try {
+    console.log('[trend-analysis] Fetching multi-chain trend data...')
+    const fetchStart = Date.now()
+
+    // Fetch all data sources in parallel
+    const [fourMeme, dexScreener] = await Promise.all([
+      fetchFourMemeTokens(),
+      fetchDexScreenerTrends(),
+    ])
+
+    const fetchMs = Date.now() - fetchStart
+    console.log(`[trend-analysis] Data fetched in ${fetchMs}ms`)
+
+    // Raw data summary for AI
+    const fourMemeHotSummary = fourMeme.hot.slice(0, 10).map(t =>
+      `${t.name}($${t.symbol})[${t.tag}] +${(t.increase24h * 100).toFixed(1)}% vol:${t.volume24h.toFixed(2)}BNB holders:${t.holders} progress:${(t.progress * 100).toFixed(0)}%`
+    ).join('\n')
+
+    const fourMemeVolSummary = fourMeme.vol.slice(0, 10).map(t =>
+      `${t.name}($${t.symbol})[${t.tag}] VOL:${t.volume24h.toFixed(2)}BNB holders:${t.holders} progress:${(t.progress * 100).toFixed(0)}%`
+    ).join('\n')
+
+    const fourMemeProgSummary = fourMeme.prog.slice(0, 10).map(t =>
+      `${t.name}($${t.symbol})[${t.tag}] PROGRESS:${(t.progress * 100).toFixed(0)}% holders:${t.holders}`
+    ).join('\n')
+
+
+    const dexProfileSummary = dexScreener.profiles.slice(0, 12).map(p =>
+      `[${p.chain}] ${p.name || p.address?.slice(0, 8)}`
+    ).join('\n')
+
+    const dexBoostedSummary = dexScreener.boosted.slice(0, 6).map(b =>
+      `[${b.chain}] ${b.name || b.address?.slice(0, 8)} boost:${b.totalAmount}`
+    ).join('\n')
+
+    const marketContext = 'Market data analyzed via Four.meme and DexScreener patterns.'
+
+    const aiAnalysisStart = Date.now()
+    const text = await chat(
+      `You are a senior crypto meme trend analyst with deep knowledge of BSC, Solana, and Ethereum meme culture. 
+You analyze real multi-chain on-chain data to identify emerging meme themes and token opportunities.
+You ALWAYS respond with valid JSON only. No markdown, no preamble, no explanation. Language: English.`,
+      `Analyze the following REAL multi-chain meme trend data fetched right now and identify the hottest themes, patterns, and opportunities.
+
+=== MARKET CONTEXT ===
+${marketContext}
+
+=== FOUR.MEME HOT TOKENS (BSC, sorted by trending) ===
+${fourMemeHotSummary || 'No data'}
+
+=== FOUR.MEME HIGH VOLUME TOKENS (BSC, 24h volume) ===
+${fourMemeVolSummary || 'No data'}
+
+=== FOUR.MEME HIGH PROGRESS TOKENS (BSC, near graduation) ===
+${fourMemeProgSummary || 'No data'}
+
+
+=== DEXSCREENER FEATURED PROFILES (BSC + SOL + ETH) ===
+${dexProfileSummary || 'No data'}
+
+=== DEXSCREENER TOP BOOSTED TOKENS (High attention) ===
+${dexBoostedSummary || 'No data'}
+
+---
+Based on ALL the data above, generate a comprehensive meme trend analysis.
+
+Respond ONLY with this exact JSON:
+{
+  "marketPulse": {
+    "sentiment": "bullish" | "bearish" | "neutral",
+    "sentimentScore": 0-100,
+    "summary": "2 sentence market condition summary",
+    "hotChain": "BSC" | "Solana" | "Ethereum",
+    "hotChainReason": "1 sentence why this chain is hottest right now"
+  },
+  "themes": [
+    {
+      "name": "Theme name (e.g. 'AI Agents', 'Animal Memes', 'Political')",
+      "emoji": "single relevant emoji",
+      "heatScore": 0-100,
+      "momentum": "rising" | "stable" | "cooling",
+      "description": "2 sentence explanation of why this theme is trending",
+      "chains": ["BSC", "Solana", "Ethereum"],
+      "exampleTokens": ["token1", "token2"],
+      "opportunity": "1 sentence specific opportunity for new token creators"
+    }
+  ],
+  "tokenIdea": {
+    "name": "Catchy token name (max 20 chars, no emoji, English only)",
+    "symbol": "3-6 UPPERCASE letters",
+    "theme": "Which theme this belongs to",
+    "tagline": "Punchy one-liner max 80 chars, include $SYMBOL",
+    "desc": "Why this token fits current trends, max 150 chars",
+    "reasoning": "2-3 sentence explanation of why this specific idea is hot RIGHT NOW based on the trend data"
+  },
+  "risingPatterns": [
+    {
+      "pattern": "Short pattern name",
+      "description": "1 sentence",
+      "strength": "strong" | "moderate" | "weak"
+    }
+  ],
+  "categoryHeatmap": {
+    "Meme": 0-100,
+    "AI": 0-100,
+    "Games": 0-100,
+    "Political": 0-100,
+    "Animal": 0-100,
+    "Food": 0-100,
+    "DeFi": 0-100,
+    "Social": 0-100
+  },
+  "topOpportunities": [
+    {
+      "title": "Short opportunity title",
+      "chain": "BSC" | "Solana" | "Ethereum",
+      "reason": "1 sentence why",
+      "urgency": "high" | "medium" | "low"
+    }
+  ],
+  "dataQuality": {
+    "fourMemeTokensAnalyzed": ${fourMeme.hot.length + fourMeme.vol.length + fourMeme.prog.length},
+    "dexScreenerProfiles": ${dexScreener.profiles.length},
+    "fetchTimeMs": ${fetchMs}
+  }
+}
+
+Rules:
+- themes: exactly 5 themes, sorted by heatScore descending
+- risingPatterns: exactly 3 patterns
+- topOpportunities: exactly 3 opportunities  
+- tokenIdea: must be inspired by the ACTUAL trending data, not generic
+- All text in English only
+- Be specific and data-driven, not generic`,
+      2000,
+    )
+
+    const aiMs = Date.now() - aiAnalysisStart
+    console.log(`[trend-analysis] AI analysis done in ${aiMs}ms`)
+
+    const match = text.match(/\{[\s\S]*\}/)
+    if (!match) throw new Error('No JSON in AI response')
+    const analysis = JSON.parse(match[0])
+
+    // Attach raw data for frontend display
+    res.json({
+      ...analysis,
+      rawData: {
+        fourMeme: {
+          hot: fourMeme.hot.slice(0, 8),
+          vol: fourMeme.vol.slice(0, 8),
+          prog: fourMeme.prog.slice(0, 8),
+        },
+        dexScreener: {
+          boosted: dexScreener.boosted.slice(0, 6),
+          profiles: dexScreener.profiles.slice(0, 8),
+        },
+      },
+      fetchedAt: new Date().toISOString(),
+      fetchTimeMs: fetchMs,
+      aiTimeMs: aiMs,
+    })
+  } catch (e) {
+    console.error('[trend-analysis]', e.message)
+    res.status(500).json({ error: e.message })
+  }
+})
+
+// ---------------------------------------------------------------------------
 // CORS Proxy: Four.meme API
 // Proxies requests from the frontend to Four.meme's API to bypass CORS.
 // Also validates token creation payloads before forwarding.

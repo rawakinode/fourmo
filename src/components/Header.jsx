@@ -11,7 +11,7 @@ import { useAccount, useBalance } from 'wagmi'
 import { useLocation } from 'react-router-dom'
 import { formatEther } from 'viem'
 import { AUTH_STATUS } from '../hooks/useFourMemeAuth'
-import { Sparkles, Rocket, Brain } from 'lucide-react'
+import { Sparkles, Rocket, Brain, Activity } from 'lucide-react'
 
 export default function Header({ page, onNavigate, isConnected, auth }) {
   const { address } = useAccount()
@@ -67,6 +67,10 @@ export default function Header({ page, onNavigate, isConnected, auth }) {
         <button className={`nav-item ${isActive('/create') ? 'nav-item--active' : ''}`}
           onClick={() => onNavigate('create')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
           <Sparkles size={18} /><span className="nav-item-text">AI Meme Creator</span>
+        </button>
+        <button className={`nav-item ${isActive('/trend') ? 'nav-item--active' : ''}`}
+          onClick={() => onNavigate('trend')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+          <Activity size={18} /><span className="nav-item-text">AI Trend Discovery</span>
         </button>
         <button className={`nav-item ${isActive('/analysis') ? 'nav-item--active' : ''}`}
           onClick={() => onNavigate('analysis')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>

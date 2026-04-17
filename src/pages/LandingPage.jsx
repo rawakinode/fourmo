@@ -2,12 +2,12 @@
  * LandingPage.jsx
  *
  * Marketing landing page for the Fourmo platform.
- * Structured in sections: hero, how-it-works, features, tech stack, and CTA.
- * Includes floating logo animations and a scrolling tech stack strip.
+ * Structured in sections: hero, how-it-works, features, built with, and CTA.
+ * Includes floating logo animations and a scrolling built with strip.
  */
 
 import { useState, useEffect } from 'react'
-import { MessageCircle, Bot, Rocket, Sparkles, BarChart3, Megaphone, Brain, Blocks, Zap, Network } from 'lucide-react'
+import { MessageCircle, Bot, Rocket, Sparkles, BarChart3, Megaphone, Brain, Blocks, Zap, Network, Activity } from 'lucide-react'
 import useScrollReveal from '../hooks/useScrollReveal'
 
 
@@ -27,7 +27,7 @@ const TECH_STACK = [
   { name: 'AI', icon: Brain },
   { name: 'Four.Meme', icon: Rocket },
   { name: 'Fireworks AI', icon: Zap },
-  { name: 'DGrid Network', icon: Network },
+  { name: 'Dgrid AI', icon: Brain },
 ]
 
 // Platform feature cards
@@ -51,6 +51,16 @@ const AI_FEATURES = [
     icon: Brain,
     title: 'AI Token Analysis',
     body: 'Deep analysis of token health, evaluating holder metrics and DEX market data for comprehensive insights.',
+  },
+  {
+    icon: Rocket,
+    title: 'Meme Launcher',
+    body: 'One-click deployment to Four.meme on Binance Smart Chain. Low fees, instant liquidity, and zero code required.',
+  },
+  {
+    icon: Activity,
+    title: 'AI Trend Discovery',
+    body: 'Real-time multi-chain market analysis powered by AI to identify the next viral meme trends before they peak.',
   },
 ]
 
@@ -166,9 +176,10 @@ export default function LandingPage({ onStart }) {
         </div>
       </section>
 
+
       {/* Technology stack — scrolling strip */}
       <section className="strip-section reveal">
-        <div className="section-label">technology stack</div>
+        <div className="section-label">Built with</div>
         <div className="strip-row">
           {[...TECH_STACK, ...TECH_STACK, ...TECH_STACK, ...TECH_STACK].map((tech, idx) => {
             const IconComponent = tech.icon;
