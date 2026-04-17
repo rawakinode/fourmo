@@ -534,7 +534,7 @@ export default function AnalysisPage() {
         <div className="an-page-title-row">
           <Brain size={28} className="an-page-icon" />
           <div>
-            <h2 className="an-page-h2">Token Analysis</h2>
+            <h2 className="an-page-h2">AI Token Analysis</h2>
             <p className="an-page-sub">AI-powered deep analysis for any token on Four.meme BSC</p>
           </div>
         </div>

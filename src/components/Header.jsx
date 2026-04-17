@@ -66,11 +66,11 @@ export default function Header({ page, onNavigate, isConnected, auth }) {
       <nav className="nav">
         <button className={`nav-item ${isActive('/create') ? 'nav-item--active' : ''}`}
           onClick={() => onNavigate('create')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-          <Sparkles size={18} /><span className="nav-item-text">Meme AI Creator</span>
+          <Sparkles size={18} /><span className="nav-item-text">AI Meme Creator</span>
         </button>
         <button className={`nav-item ${isActive('/analysis') ? 'nav-item--active' : ''}`}
           onClick={() => onNavigate('analysis')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-          <Brain size={18} /><span className="nav-item-text">Token Analysis</span>
+          <Brain size={18} /><span className="nav-item-text">AI Token Analysis</span>
         </button>
         <button className={`nav-item ${isActive('/my-tokens') ? 'nav-item--active' : ''}`}
           onClick={() => onNavigate('my-tokens')} style={{ display:'flex', alignItems:'center', gap:'6px' }}>
