@@ -10,6 +10,7 @@
  * Only one phase is visible at a time based on token creator state.
  */
 
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { Skull, X } from 'lucide-react'
 import { STEPS } from '../hooks/useTokenCreator'
@@ -23,18 +24,30 @@ import useScrollReveal from '../hooks/useScrollReveal'
 export default function CreatePage({ tokenCreator, auth }) {
   useScrollReveal()
   const { isConnected } = useAccount()
+
   const {
     step, error, result, generated, genProgress,
     isGenerating, isDeploying,
     generate, deploy, reset, setGenerated,
   } = tokenCreator
 
+  // Reset state on mount so the user starts fresh if they leave and come back
+  useEffect(() => {
+    reset()
+  }, [reset])
+
+  const [lastInputs, setLastInputs] = useState({ idea: '', imageStyle: '' })
   const { status: authStatus } = auth ?? {}
   const isAuthReady = authStatus === AUTH_STATUS.READY
 
   const handleGenerate = async (idea, imageStyle) => {
+    setLastInputs({ idea, imageStyle })
     try { await generate(idea, imageStyle) }
     catch (e) { console.error(e) }
+  }
+
+  const handleRegenerate = () => {
+    handleGenerate(lastInputs.idea, lastInputs.imageStyle)
   }
 
   const handleDeploy = async (tokenData) => {
@@ -79,6 +92,7 @@ export default function CreatePage({ tokenCreator, auth }) {
             onEdit={setGenerated}
             onDeploy={handleDeploy}
             onReset={reset}
+            onRegenerate={handleRegenerate}
             isConnected={isConnected}
             isAuthReady={isAuthReady}
             authStatus={authStatus}

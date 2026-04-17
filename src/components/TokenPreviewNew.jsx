@@ -158,7 +158,7 @@ function ViralScorePanel({ data }) {
 }
 
 /** Main token preview component with edit mode, lore, tweet, score, and deploy actions. */
-export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isConnected, isAuthReady, authStatus }) {
+export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, onRegenerate, isConnected, isAuthReady, authStatus }) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState({ ...data })
   const nameError = editing ? validateName(draft.name) : null
@@ -190,7 +190,8 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
                 <label className="preview-edit-label">token name</label>
                 <input className="preview-edit-input preview-edit-input--lg"
                   value={draft.name} maxLength={NAME_MAX_LENGTH}
-                  onChange={e => setDraft({ ...draft, name: e.target.value })} />
+                  onChange={e => setDraft({ ...draft, name: e.target.value })}
+                  autoFocus />
                 {nameError && <span style={{ color: '#ff6b6b', fontSize: '12px', marginTop: '4px', display: 'block' }}><AlertCircle size={14} style={{ display: 'inline-block' }} /> {nameError}</span>}
 
                 <label className="preview-edit-label">symbol</label>
@@ -205,10 +206,10 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
                 </select>
               </div>
             ) : (
-              <>
-                <h2 className="preview-new-name">{data.name}</h2>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                <h2 className="preview-new-name" style={{ margin: 0 }}>{data.name}</h2>
                 <span className="preview-new-label">{data.label}</span>
-              </>
+              </div>
             )}
 
             <div className="preview-new-divider" style={{ margin: '12px 0' }} />
@@ -281,8 +282,15 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
             </>
           ) : (
             <>
-              <button className="btn-ghost-sm" onClick={onReset} title="Start Over">↺ Start Over</button>
-              <button className="btn-ghost-sm" onClick={() => setEditing(true)}><Edit2 size={16} style={{ display: 'inline-block' }} /> Edit Details</button>
+              <button className="btn-outline-sm" onClick={onReset} title="Start Over">
+                <RotateCcw size={14} /> Start Over
+              </button>
+              <button className="btn-yellow-sm" onClick={onRegenerate} title="Regenerate">
+                <Zap size={14} /> Regenerate
+              </button>
+              <button className="btn-ghost-sm" onClick={() => setEditing(true)}>
+                <Edit2 size={14} /> Edit Details
+              </button>
             </>
           )}
         </div>
