@@ -332,11 +332,10 @@ export default function TrendPage() {
               <button
                 className="an-search-btn"
                 style={{ width: 'auto', padding: '0 24px', height: '44px', borderRadius: '14px', background: 'var(--surface2)', border: '1px solid var(--border2)', color: 'var(--text)' }}
-                onClick={fetchTrends}
-                disabled={loading}
+                onClick={() => setData(null)}
               >
-                {loading ? <Loader size={16} className="spin-anim" /> : <RefreshCcw size={16} />}
-                <span>{loading ? 'Analyzing...' : 'Refresh'}</span>
+                <RefreshCcw size={16} />
+                <span>New Scan</span>
               </button>
               <button
                 className="an-search-btn"
