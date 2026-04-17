@@ -90,7 +90,39 @@ async function chat(systemPrompt, userPrompt, maxTokens = 1000) {
   } else {
     res = await fireworksLlm.post('/chat/completions', payload)
   }
-  return res.data.choices[0].message.content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim()
+  const content = res.data.choices[0].message.content
+  return content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim()
+}
+
+/**
+ * Robust JSON parser for AI responses.
+ * Extracts the first JSON-like block and cleans common LLM errors (trailing commas, markdown).
+ */
+function parseAIJSON(text) {
+  if (!text) throw new Error('Empty AI response')
+  
+  // 1. Try to find the JSON block using a greedy match
+  const match = text.match(/\{[\s\S]*\}/)
+  if (!match) throw new Error('No JSON structure found in AI response')
+  
+  let jsonStr = match[0]
+  
+  // 2. Basic cleaning: remove common trailing commas that break JSON.parse
+  // Matches a comma followed by a closing bracket or brace, ignoring whitespace
+  jsonStr = jsonStr
+    .replace(/,\s*\]/g, ']')
+    .replace(/,\s*\}/g, '}')
+  
+  try {
+    return JSON.parse(jsonStr)
+  } catch (e) {
+    console.error('[parseAIJSON] Initial parse failed:', e.message)
+    console.debug('[parseAIJSON] raw string snippet:', jsonStr.slice(0, 100) + '...' + jsonStr.slice(-100))
+    
+    // 3. Last ditch effort: if it's a quote/escape issue, we can't easily fix it here,
+    // but at least we provide a cleaner error.
+    throw new Error(`JSON Parse Error: ${e.message}`)
+  }
 }
 
 /**
@@ -201,9 +233,7 @@ IMPORTANT: Follow the rules exactly. If user idea is not English, translate inte
       1200,
     )
 
-    const match = text.match(/\{[\s\S]*\}/)
-    if (!match) throw new Error('No JSON found in response')
-    res.json(JSON.parse(match[0]))
+    res.json(parseAIJSON(text))
   } catch (e) {
     console.error('[generate-token]', e.message)
     res.status(500).json({ error: e.message })
@@ -308,10 +338,9 @@ Generate:
 
 Respond with ONLY this JSON:
 { "tweet": "...", "lore": "...", "useCase": "..." }`,
-      800,
+      1000,
     )
-    const clean = text.replace(/^```json?\n?|\n?```$/g, '').trim()
-    res.json(JSON.parse(clean))
+    res.json(parseAIJSON(text))
   } catch (e) {
     console.error('[generate-lore]', e.message)
     res.status(500).json({ error: e.message })
@@ -361,11 +390,9 @@ Respond ONLY with this JSON:
   "verdict": "...",
   "tips": ["...", "...", "..."]
 }`,
-      600
+      800
     )
-    const match = text.match(/\{[\s\S]*\}/)
-    if (!match) throw new Error('No JSON in response')
-    res.json(JSON.parse(match[0]))
+    res.json(parseAIJSON(text))
   } catch (e) {
     console.error('[score-token]', e.message)
     res.status(500).json({ error: e.message })
@@ -420,11 +447,9 @@ Respond ONLY with this JSON:
   ],
   "hashtags": ["BSC", "Meme", "BNBChain", "FourMeme", "...", "...", "...", "..."]
 }`,
-      1400
+      1500
     )
-    const match = text.match(/\{[\s\S]*\}/)
-    if (!match) throw new Error('No JSON in response')
-    res.json(JSON.parse(match[0]))
+    res.json(parseAIJSON(text))
   } catch (e) {
     console.error('[marketing-kit]', e.message)
     res.status(500).json({ error: e.message })
@@ -617,12 +642,10 @@ Rules:
 - weaknesses: array of strings, 1–3 items. Real issues based on data
 - If graduated (status=TRADE), acknowledge DEX trading and adjust all analysis accordingly
 - Be honest and data-driven. Don't sugarcoat if the token is struggling.`,
-      1200
+      1500
     )
 
-    const match = text.match(/\{[\s\S]*\}/)
-    if (!match) throw new Error('No JSON in response')
-    const result = JSON.parse(match[0])
+    const result = parseAIJSON(text)
 
     // Attach raw metrics for frontend display (charts, metric cards)
     result.metrics = {
@@ -899,15 +922,13 @@ Rules:
 - tokenIdea: must be inspired by the ACTUAL trending data, not generic
 - All text in English only
 - Be specific and data-driven, not generic`,
-      2000,
+      3000,
     )
 
     const aiMs = Date.now() - aiAnalysisStart
     console.log(`[trend-analysis] AI analysis done in ${aiMs}ms`)
 
-    const match = text.match(/\{[\s\S]*\}/)
-    if (!match) throw new Error('No JSON in AI response')
-    const analysis = JSON.parse(match[0])
+    const analysis = parseAIJSON(text)
 
     // Attach raw data for frontend display
     res.json({

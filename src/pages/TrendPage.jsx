@@ -374,7 +374,7 @@ export default function TrendPage() {
             <div className="an-orb-ring an-orb-ring--3" />
             <Activity size={28} className="an-orb-icon" />
           </div>
-          <h3>Scanning multi-chain markets…</h3>
+          <h3 style={{ marginTop: 30 }}>Scanning multi-chain markets…</h3>
           <p>Fetching data from BSC, Solana, and Ethereum networks</p>
           <div className="an-analyzing-steps">
             {['Scanning Four.meme ecosystem', 'Enriching with DexScreener signals', 'AI market synthesis'].map((s, i) => (

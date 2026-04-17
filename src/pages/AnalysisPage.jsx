@@ -602,7 +602,7 @@ export default function AnalysisPage() {
             <div className="an-orb-ring an-orb-ring--3" />
             <Brain size={28} className="an-orb-icon" />
           </div>
-          <h3>Analyzing token…</h3>
+          <h3 style={{ marginTop: 30 }}>Analyzing token…</h3>
           <p>Fetching on-chain data and generating AI health report</p>
           <div className="an-analyzing-steps">
             {['Fetching token data', 'Reading bonding curve', 'AI analysis in progress', 'Generating report'].map((s, i) => (

@@ -11,10 +11,10 @@ import { STEPS, STEP_LABELS } from '../hooks/useTokenCreator'
 
 // Deployment pipeline steps with icons and humorous status messages
 const LAUNCH_PHASES = [
-  { key: STEPS.UPLOADING,    icon: Image, funny: 'uploading logo at 420kb/s…',          label: 'upload logo' },
-  { key: STEPS.CREATING_API, icon: ClipboardList, funny: 'filling out the meme paperwork…',     label: 'register token' },
-  { key: STEPS.SIGNING_TX,   icon: PenTool, funny: 'signing with the power of your wallet…', label: 'sign tx' },
-  { key: STEPS.CONFIRMING,   icon: LinkIcon, funny: 'BSC validators reviewing your genius…',  label: 'confirming' },
+  { key: STEPS.UPLOADING, icon: Image, funny: 'uploading meme image…', label: 'upload logo' },
+  { key: STEPS.CREATING_API, icon: ClipboardList, funny: 'filling out the meme paperwork…', label: 'register token' },
+  { key: STEPS.SIGNING_TX, icon: PenTool, funny: 'signing with the power of your wallet…', label: 'sign tx' },
+  { key: STEPS.CONFIRMING, icon: LinkIcon, funny: 'BSC validators reviewing your genius…', label: 'confirming' },
 ]
 
 export default function LaunchScreen({ step }) {
@@ -28,7 +28,7 @@ export default function LaunchScreen({ step }) {
       <div className="launch-rocket-wrap" aria-hidden>
         <span className="launch-rocket"><Rocket size={56} color="var(--green)" /></span>
         <div className="launch-exhaust">
-          {[0,1,2].map((i) => (
+          {[0, 1, 2].map((i) => (
             <span key={i} className="exhaust-puff" style={{ animationDelay: `${i * 0.2}s` }}><Wind size={16} /></span>
           ))}
         </div>
@@ -48,7 +48,7 @@ export default function LaunchScreen({ step }) {
       {/* Step checklist */}
       <div className="launch-steps">
         {LAUNCH_PHASES.map((p, i) => {
-          const done   = i < currentIdx
+          const done = i < currentIdx
           const active = i === currentIdx
           return (
             <div key={p.key} className={`launch-step ${done ? 'done' : active ? 'active' : 'pending'}`}>
