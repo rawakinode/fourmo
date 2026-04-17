@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Sparkles, Lightbulb, RotateCw, Palette } from 'lucide-react'
+import { Sparkles, Lightbulb, Loader, Palette } from 'lucide-react'
 
 import { STEPS } from '../hooks/useTokenCreator'
 
@@ -109,7 +109,7 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
         >
           {loading ? (
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
-              <RotateCw size={16} style={{ animation: 'spin-anim 1s linear infinite' }} />
+              <Loader size={15} className="spin-anim" />
               <span>cooking…</span>
             </div>
           ) : 'Generate'}
