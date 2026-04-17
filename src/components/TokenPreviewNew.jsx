@@ -168,10 +168,10 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
 
   return (
     <div className="preview-container">
-      <h1 className="preview-ready-heading">Your meme is ready!</h1>
+      <h1 className="preview-ready-heading animate-reveal">Your meme is ready!</h1>
 
       {/* Token identity card */}
-      <div className="preview-box">
+      <div className="preview-box animate-reveal reveal-delay-1">
         <div className="preview-new-layout">
           <div className="preview-new-logo-col">
             <div className="preview-new-logo-frame">
@@ -238,7 +238,7 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
 
       {/* Origin lore */}
       {data.lore && (
-        <div className="preview-box preview-box--lore" style={{ display: 'flex', flexDirection: 'row', gap: '14px' }}>
+        <div className="preview-box preview-box--lore animate-reveal reveal-delay-2" style={{ display: 'flex', flexDirection: 'row', gap: '14px' }}>
           <span className="preview-lore-icon"><FileText size={18} /></span>
           <div>
             <span className="preview-lore-label">origin lore</span>
@@ -249,7 +249,7 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
 
       {/* Launch tweet preview */}
       {data.tweet && (
-        <div className="preview-box preview-box--tweet">
+        <div className="preview-box preview-box--tweet animate-reveal reveal-delay-3">
           <div className="tweet-box-header">
             <span>𝕏</span> <span className="preview-lore-label">launch tweet</span>
           </div>
@@ -258,7 +258,9 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
       )}
 
       {/* AI Viral Score */}
-      <ViralScorePanel key={`${data.name}-${data.shortName}`} data={data} />
+      <div className="animate-reveal reveal-delay-4">
+        <ViralScorePanel key={`${data.name}-${data.shortName}`} data={data} />
+      </div>
 
       {/* Social links (edit mode only) */}
       {editing && (
@@ -270,7 +272,7 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, isCon
       )}
 
       {/* Action buttons */}
-      <div className="preview-box preview-box--actions">
+      <div className="preview-box preview-box--actions animate-reveal reveal-delay-5">
         <div className="preview-new-actions-left" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {editing ? (
             <>

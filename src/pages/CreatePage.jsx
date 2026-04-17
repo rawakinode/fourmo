@@ -18,8 +18,10 @@ import CreateInput from '../components/CreateInput'
 import TokenPreviewNew from '../components/TokenPreviewNew'
 import LaunchScreen from '../components/LaunchScreen'
 import SuccessScreen from '../components/SuccessScreen'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 export default function CreatePage({ tokenCreator, auth }) {
+  useScrollReveal()
   const { isConnected } = useAccount()
   const {
     step, error, result, generated, genProgress,
@@ -49,7 +51,7 @@ export default function CreatePage({ tokenCreator, auth }) {
   const showSuccess = step === STEPS.DONE && result
 
   return (
-    <div className="create-page">
+    <div className="create-page reveal">
       {/* Error toast */}
       {error && step === STEPS.ERROR && (
         <div className="error-toast">

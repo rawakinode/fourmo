@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from 'react'
 import { MessageCircle, Bot, Rocket, Sparkles, BarChart3, Megaphone, Brain, Blocks, Zap, Network } from 'lucide-react'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 
 // Decorative floating logo images
@@ -55,6 +56,7 @@ const AI_FEATURES = [
 
 export default function LandingPage({ onStart }) {
   const [floaters, setFloaters] = useState([])
+  useScrollReveal()
 
   // Spawn floating logos with randomized positions and animation timing
   useEffect(() => {
@@ -87,22 +89,22 @@ export default function LandingPage({ onStart }) {
 
       {/* Hero section */}
       <section className="hero">
-        <div className="hero-live-badge">
+        <div className="hero-live-badge reveal">
           <span className="live-dot" />
           <span>Four.Meme AI Sprint Hackathon</span>
         </div>
 
-        <h1 className="hero-h1">
+        <h1 className="hero-h1 reveal reveal-delay-1">
           Your meme.<br />
           <span className="hero-h1-accent">On-chain.</span><br />
           <span className="hero-h1-sub">In 60 seconds.</span>
         </h1>
 
-        <p className="hero-p">
+        <p className="hero-p reveal reveal-delay-2">
           Turn any idea into a live token. AI instantly crafts your name, logo, lore, and launch tweet. <br />Connect wallet. Deploy to Four.meme. Zero code. Infinite potential.
         </p>
 
-        <div className="hero-cta-row">
+        <div className="hero-cta-row reveal reveal-delay-3">
           <button className="btn-hero" onClick={onStart}>
             <span>Start creating</span>
             <span className="btn-hero-arrow">→</span>
@@ -112,7 +114,7 @@ export default function LandingPage({ onStart }) {
           </a>
         </div>
 
-        <div className="hero-stats">
+        <div className="hero-stats reveal reveal-delay-4">
           {[
             { v: '60s', l: 'idea → live' },
             { v: 'BSC', l: 'BNB Chain' },
@@ -128,7 +130,7 @@ export default function LandingPage({ onStart }) {
       </section>
 
       {/* How it works — 3-step walkthrough */}
-      <section className="how-section">
+      <section className="how-section reveal">
         <div className="section-label">how it works</div>
         <div className="how-grid">
           {HOW_STEPS.map((s, i) => {
@@ -146,7 +148,7 @@ export default function LandingPage({ onStart }) {
       </section>
 
       {/* Features grid */}
-      <section className="features-section">
+      <section className="features-section reveal">
         <div className="section-label">features</div>
         <div className="features-grid">
           {AI_FEATURES.map((feature) => {
@@ -165,7 +167,7 @@ export default function LandingPage({ onStart }) {
       </section>
 
       {/* Technology stack — scrolling strip */}
-      <section className="strip-section">
+      <section className="strip-section reveal">
         <div className="section-label">technology stack</div>
         <div className="strip-row">
           {[...TECH_STACK, ...TECH_STACK, ...TECH_STACK, ...TECH_STACK].map((tech, idx) => {
@@ -181,7 +183,7 @@ export default function LandingPage({ onStart }) {
       </section>
 
       {/* Final CTA */}
-      <section className="cta-section">
+      <section className="cta-section reveal">
         <div className="cta-blob" aria-hidden />
         <h2 className="cta-h2">Your meme is waiting.</h2>
         <p className="cta-p">The blockchain doesn't care if it's silly. Launch it anyway.</p>

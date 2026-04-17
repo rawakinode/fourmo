@@ -16,6 +16,7 @@ import { LayoutGrid, List, Search, Rocket } from 'lucide-react'
 import { AUTH_STATUS } from '../hooks/useFourMemeAuth'
 
 import { getMyTokens, resolveImg } from '../lib/fourmeme'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 
 /** Grid card for a single token with hover overlay actions. */
@@ -172,6 +173,7 @@ function ExploreCard({ token }) {
 
 /** Main page component. */
 export default function MyTokensPage({ onCreateNew, auth, onAnalyze }) {
+  useScrollReveal()
   const { address, isConnected } = useAccount()
   const { status: authStatus, accessToken, userId, profile } = auth ?? {}
 
@@ -242,7 +244,7 @@ export default function MyTokensPage({ onCreateNew, auth, onAnalyze }) {
   const isEmpty = !loading && tokens.length === 0
 
   return (
-    <div className="my-tokens-page">
+    <div className="my-tokens-page reveal">
       {/* Page header with view toggle and create button */}
       <div className="my-tokens-header" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '24px' }}>
         <div className="my-tokens-title-row">

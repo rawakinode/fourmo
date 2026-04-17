@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import { getTokenDetail, getTokenList, resolveImg } from '../lib/fourmeme'
 import { analyzeToken } from '../lib/apiClient'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 // Formatting helpers
 const isAddress = (s) => /^0x[0-9a-fA-F]{40}$/.test(s?.trim())
@@ -161,7 +162,7 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
   return (
     <div className="an-result">
       {/* Token identity bar */}
-      <div className="an-identity">
+      <div className="an-identity animate-reveal">
         <div className="an-identity-logo">
           {img
             ? <img src={img} alt={name} onError={e => { e.currentTarget.style.display = 'none' }} />
@@ -193,7 +194,7 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       </div>
 
       {/* Headline, sentiment badge, and overall score arc */}
-      <div className="an-hero">
+      <div className="an-hero animate-reveal reveal-delay-1">
         <div className="an-hero-left">
           <div className="an-sentiment-badge" style={{ background: s.bg, border: `1px solid ${s.border}`, color: s.color }}>
             <span>{s.icon}</span>
@@ -215,9 +216,9 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       </div>
 
       {/* Live metrics grid */}
-      <div className="an-section-label">live metrics</div>
+      <div className="an-section-label animate-reveal reveal-delay-2">live metrics</div>
       {!m.holderDataAvailable && (
-        <div className="an-info-banner">
+        <div className="an-info-banner animate-reveal reveal-delay-2">
           <Info size={14} />
           <span>
             Holder data not available for this token type.
@@ -225,7 +226,7 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
           </span>
         </div>
       )}
-      <div className="an-metrics-grid">
+      <div className="an-metrics-grid animate-reveal reveal-delay-2">
         <MetricCard label="Bonding Curve" value={`${m.progress}%`}
           icon={<Activity size={16} />} highlight={parseFloat(m.progress) > 50} />
         <MetricCard label="Market Cap" value={m.dexMarketCapUsd ? fmtUsd(m.dexMarketCapUsd) : fmtBnb(m.cap)}
@@ -269,8 +270,8 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       </div>
 
       {/* AI score breakdown — 4 dimensions */}
-      <div className="an-section-label">ai score breakdown</div>
-      <div className="an-scores-grid">
+      <div className="an-section-label animate-reveal reveal-delay-3">ai score breakdown</div>
+      <div className="an-scores-grid animate-reveal reveal-delay-3">
         <ScoreBar label="Momentum" score={report.dimensions?.momentum?.score ?? 0}
           insight={report.dimensions?.momentum?.insight}
           icon={<Zap size={13} />} />
@@ -288,8 +289,8 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       {/* Signals: alerts, strengths, weaknesses */}
       {(report.alerts?.length > 0 || report.strengths?.length > 0 || report.weaknesses?.length > 0) && (
         <>
-          <div className="an-section-label">signals</div>
-          <div className="an-chips-wrap">
+          <div className="an-section-label animate-reveal reveal-delay-4">signals</div>
+          <div className="an-chips-wrap animate-reveal reveal-delay-4">
             {report.alerts?.map((a, i) => <Chip key={`a${i}`} text={a} type="alert" />)}
             {report.strengths?.map((s, i) => <Chip key={`s${i}`} text={s} type="strength" />)}
             {report.weaknesses?.map((w, i) => <Chip key={`w${i}`} text={w} type="weakness" />)}
@@ -298,8 +299,8 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       )}
 
       {/* Recommendation */}
-      <div className="an-section-label">recommendation</div>
-      <div className="an-recommendation" style={{ borderColor: `${ac.color}33`, background: `${ac.color}08` }}>
+      <div className="an-section-label animate-reveal reveal-delay-5">recommendation</div>
+      <div className="an-recommendation animate-reveal reveal-delay-5" style={{ borderColor: `${ac.color}33`, background: `${ac.color}08` }}>
         <div className="an-rec-header">
           <span style={{ color: ac.color }}>{ac.icon}</span>
           <strong style={{ color: ac.color }}>{ac.label}</strong>
@@ -314,8 +315,8 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
       </div>
 
       {/* AI Summary */}
-      <div className="an-section-label">ai summary</div>
-      <div className="an-summary">
+      <div className="an-section-label animate-reveal reveal-delay-5">ai summary</div>
+      <div className="an-summary animate-reveal reveal-delay-5">
         <Brain size={16} className="an-summary-icon" />
         <p>{report.summary}</p>
       </div>
@@ -371,6 +372,7 @@ function WalletTokenPicker({ tokens, onPick, loading }) {
 
 /** Main page component. */
 export default function AnalysisPage() {
+  useScrollReveal()
   const [searchParams] = useSearchParams()
 
   const [input, setInput] = useState(searchParams.get('address') ?? '')
@@ -526,7 +528,7 @@ export default function AnalysisPage() {
   }, [selectedToken, input, runAnalysis])
 
   return (
-    <div className="an-page">
+    <div className="an-page reveal">
       {/* Page header */}
       <div className="an-page-header">
         <div className="an-page-title-row">

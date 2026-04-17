@@ -198,7 +198,7 @@ export default function SuccessScreen({ result, onReset }) {
       </div>
 
       {/* Token logo with animated rings */}
-      <div className="success-logo-wrap">
+      <div className="success-logo-wrap animate-reveal">
         {tokenData.imgUrl
           ? <img src={tokenData.imgUrl} alt={tokenData.name} className="success-logo" />
           : <div className="success-logo-ph">{tokenData.shortName?.[0]}</div>
@@ -207,19 +207,19 @@ export default function SuccessScreen({ result, onReset }) {
         <div className="success-logo-ring success-logo-ring--2" />
       </div>
 
-      <div className="success-congrats">{CONGRATS[Math.floor(Math.random() * CONGRATS.length)]}</div>
-      <h2 className="success-title"><span className="success-name">{tokenData.name}</span> is LIVE!</h2>
-      <p className="success-symbol">${tokenData.shortName} · BSC Mainnet</p>
+      <div className="success-congrats animate-reveal reveal-delay-1">{CONGRATS[Math.floor(Math.random() * CONGRATS.length)]}</div>
+      <h2 className="success-title animate-reveal reveal-delay-1"><span className="success-name">{tokenData.name}</span> is LIVE!</h2>
+      <p className="success-symbol animate-reveal reveal-delay-2">${tokenData.shortName} · BSC Mainnet</p>
 
       {tokenAddress && (
-        <div className="success-contract">
+        <div className="success-contract animate-reveal reveal-delay-3">
           <span className="success-contract-label">contract address</span>
           <code className="success-contract-addr">{tokenAddress}</code>
         </div>
       )}
 
       {/* Tab bar: Links / Marketing Kit */}
-      <div className="success-tabs">
+      <div className="success-tabs animate-reveal reveal-delay-4">
         <button className={`success-tab ${tab === 'links' ? 'success-tab--active' : ''}`} onClick={() => setTab('links')}>
           <Link2 size={13} /> links
         </button>
@@ -231,7 +231,7 @@ export default function SuccessScreen({ result, onReset }) {
 
       {/* Links tab */}
       {tab === 'links' && (
-        <div className="success-actions">
+        <div className="success-actions animate-reveal reveal-delay-4">
           <a href={fourMemeUrl} target="_blank" rel="noopener" className="success-btn success-btn--primary">
             <Rocket size={16} style={{display:'inline'}} /> open on four.meme
           </a>
@@ -250,12 +250,12 @@ export default function SuccessScreen({ result, onReset }) {
         <MarketingKit tokenData={tokenData} tokenAddress={tokenAddress} fourMemeUrl={fourMemeUrl} />
       )}
 
-      <div className="success-tx">
+      <div className="success-tx animate-reveal reveal-delay-5">
         <span>tx:</span>
         <code>{txHash.slice(0,18)}…{txHash.slice(-8)}</code>
       </div>
 
-      <button className="success-another" onClick={onReset}>+ create another token</button>
+      <button className="success-another animate-reveal reveal-delay-5" onClick={onReset}>+ create another token</button>
     </div>
   )
 }
