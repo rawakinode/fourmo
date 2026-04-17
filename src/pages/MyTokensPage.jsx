@@ -273,7 +273,7 @@ export default function MyTokensPage({ onCreateNew, auth, onAnalyze }) {
       {!isConnected && (
         <div className="tokens-wallet-hint">
           <span>👋</span>
-          <span>Connect your MetaMask to see tokens you've created</span>
+          <span>Connect your Wallet to see tokens you've created</span>
         </div>
       )}
       {isConnected && !isAuthReady && (

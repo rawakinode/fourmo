@@ -17,9 +17,9 @@ export default function AuthBanner({ auth }) {
   if (status === AUTH_STATUS.PENDING) {
     return (
       <div className="auth-banner auth-banner--pending">
-        <span className="auth-banner-icon">🦊</span>
+        <span className="auth-banner-icon">🔑</span>
         <span>
-          <strong>Check MetaMask</strong> — sign the login message to connect to Four.meme
+          <strong>Check Wallet</strong> — sign the login message to connect to Four.meme
           <span className="auth-banner-sub"> (one-time per session, no gas fee)</span>
         </span>
         <span className="auth-banner-pulse" />

@@ -312,12 +312,12 @@ export default function TokenPreviewNew({ data, onEdit, onDeploy, onReset, onReg
       {/* Connection hints */}
       {!isConnected && (
         <p className="preview-wallet-hint" style={{ textAlign: 'center', color: 'var(--text3)' }}>
-          <ArrowUp size={16} style={{ display: 'inline-block', verticalAlign: 'bottom' }} /> Connect your MetaMask wallet to launch this token
+          <ArrowUp size={16} style={{ display: 'inline-block', verticalAlign: 'bottom' }} /> Connect your Wallet to launch this token
         </p>
       )}
       {isConnected && !isAuthReady && (
         <p className="preview-wallet-hint" style={{ textAlign: 'center', color: 'var(--text3)' }}>
-          <Key size={16} style={{ display: 'inline-block', verticalAlign: 'bottom' }} /> Signing in to Four.meme — check MetaMask for the login request
+          <Key size={16} style={{ display: 'inline-block', verticalAlign: 'bottom' }} /> Signing in to Four.meme — check your Wallet for the login request
         </p>
       )}
     </div>
