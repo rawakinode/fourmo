@@ -8,14 +8,15 @@
  */
 
 import { useEffect, useState } from 'react'
-import { Trophy, Gem, Rocket, Sparkles, Send, Search,
-         Copy, Check, Megaphone, Link2, MessageSquare, Hash, Loader2 } from 'lucide-react'
+import {
+  Trophy, Gem, Rocket, Sparkles, Send, Search,
+  Copy, Check, Megaphone, Link2, MessageSquare, Hash, Loader2
+} from 'lucide-react'
 
 // Random congratulatory messages
 const CONGRATS = [
   'you absolute legend 🏆',
   'ser, you are built different 💎',
-  'ngab, token lu live bro! 🔥',
   'to the moon and beyond 🚀',
   'your meme is now immortal ✨',
 ]
@@ -63,7 +64,7 @@ function MarketingKit({ tokenData, tokenAddress, fourMemeUrl }) {
   const [sub, setSub] = useState('tweets')
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       try {
         const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/marketing-kit', {
           method: 'POST',
@@ -98,9 +99,9 @@ function MarketingKit({ tokenData, tokenAddress, fourMemeUrl }) {
       {/* Sub-tab navigation */}
       <div className="mkit-subtabs">
         {[
-          { id: 'tweets',   icon: MessageSquare, label: 'tweets' },
-          { id: 'telegram', icon: Send,          label: 'telegram' },
-          { id: 'hashtags', icon: Hash,          label: 'hashtags' },
+          { id: 'tweets', icon: MessageSquare, label: 'tweets' },
+          { id: 'telegram', icon: Send, label: 'telegram' },
+          { id: 'hashtags', icon: Hash, label: 'hashtags' },
         ].map(({ id, icon: Icon, label }) => (
           <button key={id} className={`mkit-subtab ${sub === id ? 'mkit-subtab--active' : ''}`} onClick={() => setSub(id)}>
             <Icon size={12} /> {label}
@@ -233,14 +234,14 @@ export default function SuccessScreen({ result, onReset }) {
       {tab === 'links' && (
         <div className="success-actions animate-reveal reveal-delay-4">
           <a href={fourMemeUrl} target="_blank" rel="noopener" className="success-btn success-btn--primary">
-            <Rocket size={16} style={{display:'inline'}} /> open on four.meme
+            <Rocket size={16} style={{ display: 'inline' }} /> open on four.meme
           </a>
           <a href={`https://twitter.com/intent/tweet?text=${tweetText}`}
             target="_blank" rel="noopener" className="success-btn success-btn--tweet">
-            <Send size={16} style={{display:'inline'}} /> post launch tweet
+            <Send size={16} style={{ display: 'inline' }} /> post launch tweet
           </a>
           <a href={bscScanUrl} target="_blank" rel="noopener" className="success-btn success-btn--ghost">
-            <Search size={16} style={{display:'inline'}} /> view tx on BSCScan
+            <Search size={16} style={{ display: 'inline' }} /> view tx on BSCScan
           </a>
         </div>
       )}
@@ -252,7 +253,7 @@ export default function SuccessScreen({ result, onReset }) {
 
       <div className="success-tx animate-reveal reveal-delay-5">
         <span>tx:</span>
-        <code>{txHash.slice(0,18)}…{txHash.slice(-8)}</code>
+        <code>{txHash.slice(0, 18)}…{txHash.slice(-8)}</code>
       </div>
 
       <button className="success-another animate-reveal reveal-delay-5" onClick={onReset}>+ create another token</button>
