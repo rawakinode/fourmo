@@ -44,6 +44,13 @@ const fmtAge = (h) => {
   if (h < 24) return `${h}h`
   return `${Math.floor(h / 24)}d ${h % 24}h`
 }
+const fmtPrice = (v) => {
+  const n = parseFloat(v ?? 0)
+  if (isNaN(n) || n === 0) return '—'
+  if (n >= 0.1) return n.toFixed(6)
+  if (n >= 0.0001) return n.toFixed(8).replace(/\.?0+$/, '')
+  return n.toFixed(11).replace(/\.?0+$/, '')
+}
 
 // Visual config for sentiment badges
 const SENTIMENT_CONFIG = {
@@ -246,7 +253,7 @@ function AnalysisResult({ report, tokenMeta, onRefresh, loading }) {
         <MetricCard label="Volume 24h" value={m.dexVolume24hUsd ? fmtUsd(m.dexVolume24hUsd) : fmtBnb(m.volume24h)}
           sub={m.dexVolume24hUsd ? 'from DexScreener' : null}
           icon={<Droplets size={16} />} />
-        <MetricCard label="Price" value={m.dexPriceUsd ? ('$' + parseFloat(m.dexPriceUsd).toFixed(6)) : (m.price || '—')}
+        <MetricCard label="Price" value={m.dexPriceUsd ? ('$' + fmtPrice(m.dexPriceUsd)) : fmtPrice(m.price)}
           sub={m.dexPriceUsd ? 'USD' : 'BNB per token'} icon={<TrendingUp size={16} />} />
         <MetricCard label="24h Change" value={fmtPct(m.change24h)}
           icon={parseFloat(m.change24h) >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}

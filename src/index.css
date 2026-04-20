@@ -1303,11 +1303,12 @@ button {
 
 .preview-new-logo-frame {
   position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 24px;
+  width: 180px;
+  height: 180px;
+  border-radius: 36px;
   overflow: hidden;
-  border: 2px solid var(--border2);
+  border: 3px solid var(--border2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .preview-new-img {
@@ -1323,7 +1324,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
+  font-size: 64px;
   font-weight: 800;
   color: var(--green);
   font-family: var(--font-disp);
@@ -1340,9 +1341,9 @@ button {
   background: rgba(0, 255, 136, 0.08);
   border: 1px solid rgba(0, 255, 136, 0.25);
   border-radius: 99px;
-  padding: 4px 12px;
+  padding: 6px 16px;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--green);
   box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
@@ -1739,23 +1740,24 @@ button {
 }
 
 .success-logo {
-  width: 120px;
-  height: 120px;
-  border-radius: 28px;
+  width: 180px;
+  height: 180px;
+  border-radius: 36px;
   object-fit: cover;
   position: relative;
   z-index: 1;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .success-logo-ph {
-  width: 120px;
-  height: 120px;
-  border-radius: 28px;
+  width: 180px;
+  height: 180px;
+  border-radius: 36px;
   background: var(--surface2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 52px;
+  font-size: 72px;
   font-weight: 800;
   font-family: var(--font-disp);
   color: var(--green);
@@ -1772,13 +1774,13 @@ button {
 }
 
 .success-logo-ring--1 {
-  width: 160px;
-  height: 160px;
+  width: 240px;
+  height: 240px;
 }
 
 .success-logo-ring--2 {
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
   animation-delay: 0.4s;
 }
 
