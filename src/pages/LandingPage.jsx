@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { MessageCircle, Bot, Rocket, Sparkles, BarChart3, Megaphone, Brain, Blocks, Zap, Network, Activity } from 'lucide-react'
+import { MessageCircle, Bot, Rocket, Sparkles, BarChart3, Megaphone, Brain, Blocks, Zap, Network, Activity, CheckCircle2, Clock, Telescope, Cpu, Globe, Users } from 'lucide-react'
 import useScrollReveal from '../hooks/useScrollReveal'
 
 
@@ -61,6 +61,44 @@ const AI_FEATURES = [
     icon: Activity,
     title: 'AI Trend Discovery',
     body: 'Real-time multi-chain market analysis powered by AI to identify the next viral meme trends before they peak.',
+  },
+]
+
+// Roadmap phases
+const ROADMAP = [
+  {
+    phase: '01',
+    label: 'Shipped',
+    badge: 'Live Now',
+    accent: 'green',
+    items: [
+      { icon: Cpu, text: '7-stage AI creation pipeline with incremental UI' },
+      { icon: Brain, text: 'DGrid Gemini 3 Pro image integration' },
+      { icon: Sparkles, text: 'Image Style selection with 6+ visual presets' },
+      { icon: BarChart3, text: 'DexScreener + Four.meme hybrid token analysis' },
+      { icon: Activity, text: 'AI Trend Discovery with multi-source data fusion' },
+      { icon: Megaphone, text: 'Full marketing kit: tweets, Telegram, hashtags' },
+    ],
+  },
+  {
+    phase: '02',
+    label: 'Next Up',
+    badge: 'In Progress',
+    accent: 'yellow',
+    items: [
+      { icon: Bot, text: 'AI Agent Mode: autonomous token monitoring & price alerts' },
+      { icon: Zap, text: 'Batch Scoring: analyze entire trending lists in one click' },
+    ],
+  },
+  {
+    phase: '03',
+    label: 'Vision',
+    badge: 'Future',
+    accent: 'purple',
+    items: [
+      { icon: Globe, text: 'Multi-chain expansion: Solana & Base' },
+      { icon: Users, text: 'Social graph: auto-post marketing kit to X/Telegram' },
+    ],
   },
 ]
 
@@ -193,14 +231,52 @@ export default function LandingPage({ onStart }) {
         </div>
       </section>
 
+      {/* Roadmap */}
+      <section className="roadmap-section reveal">
+        <div className="section-label">roadmap</div>
+        <div className="roadmap-header">
+          <h2 className="roadmap-title">Built today. Evolving tomorrow.</h2>
+          <p className="roadmap-subtitle">From a 7-stage AI pipeline to autonomous agents — here's where Fourmo is headed.</p>
+        </div>
+        <div className="roadmap-grid">
+          {ROADMAP.map((phase, pi) => (
+            <div className={`roadmap-phase roadmap-phase--${phase.accent}`} key={pi}>
+              <div className="roadmap-phase-header">
+                <span className="roadmap-phase-num">{phase.phase}</span>
+                <div className="roadmap-phase-meta">
+                  <span className="roadmap-phase-label">{phase.label}</span>
+                  <span className={`roadmap-badge roadmap-badge--${phase.accent}`}>{phase.badge}</span>
+                </div>
+              </div>
+              <div className="roadmap-items">
+                {phase.items.map((item, ii) => {
+                  const Icon = item.icon
+                  return (
+                    <div className="roadmap-item" key={ii}>
+                      <div className={`roadmap-item-icon roadmap-item-icon--${phase.accent}`}>
+                        <Icon size={14} strokeWidth={2} />
+                      </div>
+                      <span className="roadmap-item-text">{item.text}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              <div className="roadmap-phase-glow" aria-hidden />
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="cta-section reveal">
-        <div className="cta-blob" aria-hidden />
-        <h2 className="cta-h2">Your meme is waiting.</h2>
-        <p className="cta-p">The blockchain doesn't care if it's silly. Launch it anyway.</p>
-        <button className="btn-hero btn-hero--lg" onClick={onStart}>
-          create my token <span>🐸</span>
-        </button>
+        <div className="cta-box">
+          <div className="cta-box-glow" aria-hidden />
+          <h2 className="cta-h2">Your meme is waiting.</h2>
+          <p className="cta-p">The blockchain doesn't care if it's silly.<br />Launch it anyway and join the meta.</p>
+          <button className="btn-hero btn-hero--lg btn-premium" onClick={onStart}>
+             <span>Create my token</span> <Rocket size={20} strokeWidth={2.5} />
+          </button>
+        </div>
       </section>
     </div>
   )
