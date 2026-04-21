@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Sparkles, Lightbulb, Loader, Palette } from 'lucide-react'
+import { Sparkles, Lightbulb, Loader, Palette, Brain } from 'lucide-react'
 import { STEPS } from '../hooks/useTokenCreator'
 import { useNavigate } from 'react-router-dom'
 
@@ -182,15 +182,37 @@ export default function CreateInput({ onGenerate, isGenerating, step, genProgres
       )}
 
 
-      {/* Progress bar during generation */}
+      {/* Brain Radar Loader during generation */}
       {loading ? (
-        <div className="create-progress-section">
-          <div className="create-progress-header">
-            <span>{(PHASE_CONFIG.find(p => p.key === step) ?? PHASE_CONFIG[0]).title}...</span>
-            <span>{pct}%</span>
+        <div className="an-analyzing" style={{ padding: '40px 0' }}>
+          <div className="an-analyzing-orb">
+            <div className="an-orb-ring an-orb-ring--1" />
+            <div className="an-orb-ring an-orb-ring--2" />
+            <div className="an-orb-ring an-orb-ring--3" />
+            <Brain size={28} className="an-orb-icon" />
           </div>
-          <div className="create-progress-track">
-            <div className="create-progress-fill" style={{ width: `${pct}%` }} />
+          <h3 style={{ marginTop: 30 }}>Cooking your meme…</h3>
+          <p>The AI is visualizing your idea and crafting its lore</p>
+          <div className="an-analyzing-steps" style={{ alignSelf: 'center', marginTop: 10 }}>
+            {PHASE_CONFIG.map((p, i) => {
+              const isActive = p.key === step
+              // A simple way to show past steps as done
+              const currentIndex = PHASE_CONFIG.findIndex(ph => ph.key === step)
+              const isPast = i < currentIndex
+
+              return (
+                <div key={i} className="an-analyzing-step" style={{ opacity: isActive || isPast ? 1 : 0.4 }}>
+                  <Loader size={12} className={isActive ? "spin-anim" : ""} style={{ opacity: isActive ? 0.8 : 0.4 }} />
+                  <span style={{ color: isActive ? 'var(--green)' : 'inherit' }}>{p.title}</span>
+                </div>
+              )
+            })}
+          </div>
+          
+          <div className="create-progress-section" style={{ marginTop: 40, opacity: 0.8 }}>
+            <div className="create-progress-track" style={{ height: 4 }}>
+              <div className="create-progress-fill" style={{ width: `${pct}%` }} />
+            </div>
           </div>
         </div>
       ) : (
