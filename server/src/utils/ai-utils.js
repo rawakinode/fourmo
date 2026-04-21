@@ -28,3 +28,16 @@ export function parseAIJSON(text) {
     throw new Error(`JSON Parse Error: ${e.message}`)
   }
 }
+
+/**
+ * Basic sanitization for user-provided strings before inserting into LLM prompts.
+ * Prevents basic prompt injection and limits input length.
+ */
+export function sanitizePromptInput(str, maxLen = 500) {
+  if (typeof str !== 'string') return ''
+  return str
+    .trim()
+    .slice(0, maxLen)
+    .replace(/[<>]/g, '') // Avoid potential HTML or special tag-based injection cues
+    .replace(/\r?\n/g, ' ') // Flatten to single line to keep context predictable
+}
