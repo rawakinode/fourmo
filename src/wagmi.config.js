@@ -11,8 +11,8 @@ import { bsc } from 'wagmi/chains'
 import { http } from 'wagmi'
 
 export const config = getDefaultConfig({
-  appName: 'MemeAgent Studio',
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'memeagent-studio-dev',
+  appName: 'Fourmo',
+  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'fourmo-dev',
   chains: [bsc],
   transports: {
     [bsc.id]: http('https://1rpc.io/bnb'),

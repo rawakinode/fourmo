@@ -70,6 +70,7 @@ export const generateImage = async (req, res) => {
   const safeShortName = sanitizePromptInput(shortName, 10)
   const safeNegative = sanitizePromptInput(imageNegativePrompt, 300)
 
+  const start = Date.now()
   try {
     const finalPrompt =
       `Crypto meme coin logo for "${safeName}" ($${safeShortName}). ${safePrompt}. ` +
@@ -112,8 +113,12 @@ export const generateImage = async (req, res) => {
       base64 = Buffer.from(response.data).toString('base64')
     }
 
+    const duration = Date.now() - start
+    console.log(`[generate-image] Success in ${duration}ms for ${safeName}`)
     res.json({ imageBase64: base64, mediaType: 'image/jpeg', dataUrl: `data:image/jpeg;base64,${base64}` })
   } catch (e) {
+    const duration = Date.now() - start
+    console.error(`[generate-image] Failed after ${duration}ms:`, e.message)
     let msg = e.message;
     if (e.response?.data) {
       try {
