@@ -83,7 +83,7 @@ export const generateImage = async (req, res) => {
     if (AI_IMAGE_PROVIDER === 'dgrid') {
       const isGeminiModel = IMAGE_MODEL.toLowerCase().includes('gemini')
       if (isGeminiModel) {
-        const response = await dgridApi.post('/chat/completions', {
+        const response = await dgridApi.post('chat/completions', {
           model: IMAGE_MODEL,
           stream: false,
           messages: [{ role: 'user', content: finalPrompt }]
@@ -93,7 +93,7 @@ export const generateImage = async (req, res) => {
         if (!base64Match) throw new Error('No image returned from DGrid Gemini model')
         base64 = base64Match[1]
       } else {
-        const response = await dgridApi.post('/images/generations', {
+        const response = await dgridApi.post('images/generations', {
           model: IMAGE_MODEL,
           prompt: finalPrompt,
           n: 1,
@@ -103,7 +103,7 @@ export const generateImage = async (req, res) => {
         base64 = response.data.data[0].b64_json
       }
     } else {
-      const response = await fireworksImgApi.post(`/workflows/${IMAGE_MODEL}/text_to_image`, {
+      const response = await fireworksImgApi.post(`workflows/${IMAGE_MODEL}/text_to_image`, {
         prompt: finalPrompt,
         negative_prompt: negativePrompt,
         aspect_ratio: '1:1',

@@ -14,9 +14,9 @@ export async function chat(systemPrompt, userPrompt, maxTokens = 1000) {
 
   let res;
   if (AI_LLM_PROVIDER === 'dgrid') {
-    res = await dgridApi.post('/chat/completions', payload)
+    res = await dgridApi.post('chat/completions', payload)
   } else {
-    res = await fireworksLlm.post('/chat/completions', payload)
+    res = await fireworksLlm.post('chat/completions', payload)
   }
   const content = res.data.choices[0].message.content
   return content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim()
